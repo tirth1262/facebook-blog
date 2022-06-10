@@ -1,18 +1,31 @@
 from flask import Flask
-from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
 from flask_bcrypt import Bcrypt
+from blogapp.config import Config
+from flask_login import LoginManager
+
+db = SQLAlchemy()
+bcrypt = Bcrypt()
+login_manager = LoginManager()
+login_manager.login_view = 'users.login'
+login_manager.login_message_category = 'info'
+mail = Mail()
 
 
-app = Flask(__name__)
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(Config)
 
-app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:postgres@localhost:5432/blog_fb'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    db.init_app(app)
+    bcrypt.init_app(app)
+    mail.init_app(app)
+    login_manager.init_app(app)
+    login_manager.init_app(app)
+    login_manager.init_app(app)
 
-db = SQLAlchemy() 
-db.init_app(app)
+    from blogapp.users.routes import users
 
-bcrypt=Bcrypt()
-from blogapp import routes
+    app.register_blueprint(users)
 
+    return app
