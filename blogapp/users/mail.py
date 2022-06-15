@@ -1,10 +1,10 @@
 from blogapp import mail
 from flask import url_for, current_app
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired
+from itsdangerous import URLSafeTimedSerializer
 from flask_mail import Message
 
-# s = URLSafeTimedSerializer(current_app.config.get(['SECRET_KEY']))
-s = URLSafeTimedSerializer('5791628bb0b13ce0c676dfde280ba245')
+s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+
 
 def send_email(email):
     token = s.dumps(email)

@@ -21,15 +21,14 @@ def create_app(config_class=Config):
     bcrypt.init_app(app)
     mail.init_app(app)
     login_manager.init_app(app)
-    login_manager.init_app(app)
-    login_manager.init_app(app)
 
-    from blogapp.users.routes import users
-    from blogapp.posts.routes import posts
-    from blogapp.main.routes import main
+    with app.app_context():
+        from blogapp.users.routes import users
+        from blogapp.posts.routes import posts
+        from blogapp.main.routes import main
 
-    app.register_blueprint(users)
-    app.register_blueprint(posts)
-    app.register_blueprint(main)
+        app.register_blueprint(users)
+        app.register_blueprint(posts)
+        app.register_blueprint(main)
 
-    return app
+        return app

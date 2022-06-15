@@ -1,15 +1,13 @@
 from blogapp import db, bcrypt, create_app
 from flask import render_template, redirect, flash, url_for, Blueprint, request, current_app
 from blogapp.users.forms import LoginForm, RegistrationForm, UpdateAccountForm, UpdatePassword
-from blogapp.models import User, Post
+from blogapp.models import User, Post, UserProfile
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from blogapp.users.mail import send_email
 from flask_login import login_user, current_user, logout_user, login_required
 
 users = Blueprint('users', __name__)
-v=current_app.config['MAIL_PASSWORD']
-print("-----------------------------------------------------",v)
-s = URLSafeTimedSerializer('5791628bb0b13ce0c676dfde280ba245')
+s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
 
 
 @users.route('/', methods=['GET', 'POST'])
@@ -39,11 +37,17 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hs_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data,email=form.email.data,password=hs_pw)
+        user = User(username=form.username.data, email=form.email.data, password=hs_pw)
+        image_file = url_for('static', filename='profile_pics/' + 'default.jpg')
         email = form.email.data
         send_email(email)
         db.session.add(user)
         db.session.commit()
+        user = User.query.filter_by(email=email).first()
+        profile = UserProfile(firstname=None, lastname=None, profile_image=image_file, birthday=None, user_id=user.id)
+        db.session.add(profile)
+        db.session.commit()
+
         flash(f'Your account has been created! You are now able to log in', 'success')
         flash('First verify your email.', 'info')
         return redirect(url_for('users.login'))
@@ -61,24 +65,28 @@ def logout():
 @users.route('/account/', methods=['GET', 'POST'])
 @login_required
 def account():
-    form=UpdateAccountForm()
+    form = UpdateAccountForm()
     if form.validate_on_submit():
         if form.picture.data:
             picture_file = save_picture(form.picture.data)
             current_user.image_file = picture_file
-        current_user.username=form.username.data
-        current_user.email=form.email.data
+        current_user.username = form.username.data
+        current_user.email = form.email.data
+        current_user.user_profile.firstname = form.firstname.data
+        current_user.user_profile.lastname = form.lastname.data
+        current_user.user_profile.birthday = form.birthday.data
         db.session.commit()
-        flash(f'Your account has been updated!','success')
+        flash(f'Your account has been updated!', 'success')
         return redirect(url_for('users.account'))
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
+        form.firstname.data = current_user.user_profile.firstname
+        form.lastname.data = current_user.user_profile.lastname
+        form.birthday.data = current_user.user_profile.birthday
 
-    # image_file=url_for('static',filename='profile_pics/'+ current_user.image_file)
-    # return render_template('account.html',title='Account',image_file=image_file,form=form)
-    return render_template('account.html',title='Account',form=form)
 
+    return render_template('account.html', title='Account', form=form)
 
 
 @users.route('/user/<string:username>')
@@ -97,9 +105,9 @@ def update_password():
             flash('Password Incorrect', 'danger')
         else:
             hs_pw = bcrypt.generate_password_hash(form.new_password.data).decode('utf-8')
-            current_user.password=hs_pw
+            current_user.password = hs_pw
             db.session.commit()
-            flash('Your password has been Updated!','success')
+            flash('Your password has been Updated!', 'success')
             return redirect(url_for('main.home'))
 
     return render_template('update_password.html', title='Update password', form=form)

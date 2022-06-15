@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_login import current_user
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, EmailField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, EmailField, DateField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Regexp
 from blogapp.models import User
 from flask_wtf.file import FileField, FileAllowed
 
@@ -16,7 +16,12 @@ class LoginForm(FlaskForm):
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = EmailField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('Password', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired(),Length(min=8, message="Password be at least 8 characters"),
+            Regexp("^(?=.*[a-z])", message="Password must have a lowercase character"),
+            Regexp("^(?=.*[A-Z])", message="Password must have an uppercase character"),
+            Regexp("^(?=.*\\d)", message="Password must contain a number"),
+            Regexp(
+                "(?=.*[@$!%*#?&])", message="Password must contain a special character")])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
 
@@ -29,8 +34,12 @@ class RegistrationForm(FlaskForm):
 class UpdateAccountForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = EmailField('Email', validators=[DataRequired(), Email()])
+    firstname = StringField('Firstname', validators=[DataRequired(), Length(min=2, max=20)])
+    lastname = StringField('Lastname', validators=[DataRequired(), Length(min=2, max=20)])
+    birthday = DateField('Birth Date', validators=[DataRequired()])
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Update')
+
 
     def validate_username(self, username):
         if current_user.username != username.data:
