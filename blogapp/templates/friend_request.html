@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="people-nearby">
+                    {% for friend_request in friend_requests %}
+                        <div class="nearby-user">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-2">
+                                    <img src="{{ url_for('static',filename='profile_pics/'+ friend_request.user.user_profile.profile_image) }}"
+                                         alt="user" class="profile-photo-lg">
+                                </div>
+                                <div class="col-md-7 col-sm-7 ml-3">
+                                    <h5><a href="#" class="profile-link">{{ friend_request.user.username }}</a></h5>
+                                    <p>{{ friend_request.user.email }}</p>
+{#                                    <p class="text-muted">500m away</p>#}
+                                </div>
+                                <form action="" method="POST">
+                                    {% if friend_request.user.friend.status == 'pending' %}
+                                       <div class="col-md-3 col-sm-3">
+                                            <input type="hidden" name="friend_id" value="{{ friend_request.user.id }}">
+                                            <button class="btn btn-primary pull-right">request cancel</button>
+                                        </div>
+                                    {% else %}
+                                        <div class="container">
+                                            <div class="row">
+
+                                                <form method="POST" name="accept_form">
+                                                    <div class="col-md-3 col-sm-3 mt-1">
+                                                        <input type="hidden" name="friend_id" value="{{ friend_request.id }}">
+                                                        <button class="btn btn-primary pull-right">Accept</button>
+                                                    </div>
+                                                </form>
+
+                                                <form method="POST" name="delete_form">
+                                                    <div class="col-md-3 col-sm-3 mt-1 ml-5">
+                                                        <input type="hidden" name="delete_id" value="{{ friend_request.id }}">
+                                                        <button class="btn btn-primary pull-right">decline</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+
+
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

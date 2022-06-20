@@ -2,7 +2,7 @@
 {% block content %}
     <div class="content-section">
       <div class="media">
-        <img class="rounded-circle account-img" src="{{ current_user.user_profile.profile_image }}">
+        <img alt="profile picture" class="rounded-circle account-img" src="{{ url_for('static',filename='profile_pics/'+ current_user.user_profile.profile_image) }}">
         <div class="media-body">
           <h2 class="account-heading">{{ current_user.username }}</h2>
           <p class="text-secondary">{{ current_user.email }}</p>
@@ -16,66 +16,57 @@
                     {{ form.username.label(class="form-control-label") }}
 
                     {% if form.username.errors %}
-                        {{ form.username(class="form-control form-control-lg is-invalid") }}
+                        {{ form.username(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.username.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.username(class="form-control form-control-lg") }}
+                        {{ form.username(class="form-control") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
                     {{ form.email.label(class="form-control-label") }}
-                    {% if form.email.errors %}
-                        {{ form.email(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.email.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.email(class="form-control form-control-lg") }}
-                    {% endif %}
+                    <input class="form-control" type="text" placeholder="{{ current_user.email }}" readonly>
                 </div>
                 <div class="form-group">
                     {{ form.firstname.label(class="form-control-label") }}
                     {% if form.firstname.errors %}
-                        {{ form.firstname(class="form-control form-control-lg is-invalid") }}
+                        {{ form.firstname(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.firstname.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.firstname(class="form-control form-control-lg") }}
+                        {{ form.firstname(class="form-control") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
                     {{ form.lastname.label(class="form-control-label") }}
                     {% if form.lastname.errors %}
-                        {{ form.lastname(class="form-control form-control-lg is-invalid") }}
+                        {{ form.lastname(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.lastname.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.lastname(class="form-control form-control-lg") }}
+                        {{ form.lastname(class="form-control") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
                     {{ form.birthday.label(class="form-control-label") }}
                     {% if form.birthday.errors %}
-                        {{ form.birthday(class="form-control form-control-lg is-invalid") }}
+                        {{ form.birthday(class="form-control is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.birthday.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.birthday(class="form-control form-control-lg") }}
+                        {{ form.birthday(class="form-control") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -83,10 +74,13 @@
                     {{ form.picture(class="form-control-file") }}
                     {% if form.picture.errors %}
                         {% for error in form.picture.errors %}
-                            <span class="text-danger">{{ error }}</span></br>
+                            <span class="text-danger">{{ error }}</span> </br>
                         {% endfor %}
+
                     {% endif %}
+
                 </div>
+
             </fieldset>
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}

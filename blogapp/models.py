@@ -16,6 +16,7 @@ class User(db.Model, UserMixin):
     is_active = db.Column(db.Boolean, default=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     user_profile = db.relationship('UserProfile', backref='profile', uselist=False)
+    friend = db.relationship('Friends', backref='friend', foreign_keys="[Friends.receiver_id]",lazy=True, uselist=False)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -39,5 +40,22 @@ class UserProfile(db.Model):
     firstname = db.Column(db.String(50), nullable=True)
     lastname = db.Column(db.String(50), nullable=True)
     profile_image = db.Column(db.String(50), nullable=False, default='default.jpg')
-    birthday = db.Column(db.Date,nullable=True)
+    birthday = db.Column(db.Date, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
+
+class Friends(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    receiver_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    status = db.Column(db.String(50), nullable=False, default='pending')
+    is_blocked = db.Column(db.Boolean, default=False)
+    user = db.relationship('User', backref='user', foreign_keys="[Friends.sender_id]",lazy=True, uselist=False)
+
+
+class Likes(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    like = db.Column(db.Boolean, default=False)
+

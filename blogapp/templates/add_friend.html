@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="people-nearby">
+                    {% for friend in friends %}
+                        <div class="nearby-user">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-2">
+                                    <img src="{{ url_for('static',filename='profile_pics/'+ friend.user_profile.profile_image) }}"
+                                         alt="user" class="profile-photo-lg">
+                                </div>
+                                <div class="col-md-7 col-sm-7 ml-3">
+                                    <h5><a href="#" class="profile-link">{{ friend.username }}</a></h5>
+                                    <p>{{ friend.email }}</p>
+{#                                    <p class="text-muted">500m away</p>#}
+                                </div>
+                                <form action="" method="POST">
+                                    {% if friend.friend.status == 'pending' %}
+                                       <div class="col-md-3 col-sm-3 container">
+                                            <input type="hidden" name="friend_id" value="{{ friend.id }}">
+                                            <button class="btn btn-primary pull-right">request cancel</button>
+                                        </div>
+                                    {% else %}
+                                        <div class="col-md-3 col-sm-3 mt-2 container">
+                                            <input type="hidden" name="friend_id" value="{{ friend.id }}">
+                                            <button class="btn btn-primary pull-right">Add Friend</button>
+                                        </div>
+                                    {% endif %}
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

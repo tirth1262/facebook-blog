@@ -1,10 +1,12 @@
-from blogapp import db, bcrypt, create_app
+from blogapp import db, bcrypt
 from flask import render_template, redirect, flash, url_for, Blueprint, request, current_app
 from blogapp.users.forms import LoginForm, RegistrationForm, UpdateAccountForm, UpdatePassword
-from blogapp.models import User, Post, UserProfile
+from blogapp.models import User, Post, UserProfile, Friends
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from blogapp.users.mail import send_email
 from flask_login import login_user, current_user, logout_user, login_required
+from blogapp.posts.utils import save_profile_picture
+from sqlalchemy import desc
 
 users = Blueprint('users', __name__)
 s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
@@ -20,7 +22,7 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if not (user and bcrypt.check_password_hash(user.password, form.password.data)):
             flash('Login Unsuccessful. Please check your email or password', 'danger')
-        elif user.is_active == False:
+        elif not user.is_active:
             flash('Login Unsuccessful. Please first verify your email', 'danger')
         else:
             login_user(user, remember=form.remember.data)
@@ -38,13 +40,14 @@ def register():
     if form.validate_on_submit():
         hs_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, email=form.email.data, password=hs_pw)
-        image_file = url_for('static', filename='profile_pics/' + 'default.jpg')
+        # image_file = url_for('static', filename='profile_pics/' + 'default.jpg')
         email = form.email.data
         send_email(email)
         db.session.add(user)
         db.session.commit()
         user = User.query.filter_by(email=email).first()
-        profile = UserProfile(firstname=None, lastname=None, profile_image=image_file, birthday=None, user_id=user.id)
+        profile = UserProfile(firstname=None, lastname=None, profile_image="default.jpg", birthday=None,
+                              user_id=user.id)
         db.session.add(profile)
         db.session.commit()
 
@@ -66,33 +69,34 @@ def logout():
 @login_required
 def account():
     form = UpdateAccountForm()
-    if form.validate_on_submit():
-        if form.picture.data:
-            picture_file = save_picture(form.picture.data)
-            current_user.image_file = picture_file
-        current_user.username = form.username.data
-        current_user.email = form.email.data
-        current_user.user_profile.firstname = form.firstname.data
-        current_user.user_profile.lastname = form.lastname.data
-        current_user.user_profile.birthday = form.birthday.data
-        db.session.commit()
-        flash(f'Your account has been updated!', 'success')
-        return redirect(url_for('users.account'))
+    if request.method == 'POST':
+        if form.validate_on_submit():
+            if form.picture.data:
+                picture_file = save_profile_picture(form.picture.data)
+                current_user.user_profile.profile_image = picture_file
+            current_user.username = form.username.data
+            current_user.user_profile.firstname = form.firstname.data
+            current_user.user_profile.lastname = form.lastname.data
+            current_user.user_profile.birthday = form.birthday.data
+            db.session.commit()
+            flash(f'Your account has been updated!', 'success')
+            return redirect(url_for('users.account'))
+        else:
+            print("form not valid")
     elif request.method == 'GET':
         form.username.data = current_user.username
-        form.email.data = current_user.email
         form.firstname.data = current_user.user_profile.firstname
         form.lastname.data = current_user.user_profile.lastname
         form.birthday.data = current_user.user_profile.birthday
 
-
-    return render_template('account.html', title='Account', form=form)
+    return render_template('account.html', title='Account', form=form, condition=True )
 
 
 @users.route('/user/<string:username>')
+@login_required
 def user_posts(username):
     user = User.query.filter_by(username=username).first_or_404()
-    posts = Post.query.filter_by(author=user).order_by(Post.created_at.desc())
+    posts = Post.query.filter_by(author=user).order_by(desc(Post.created_at))
     return render_template('user_posts.html', posts=posts, user=user)
 
 
@@ -124,3 +128,5 @@ def confirm_mail(token):
         return 'token expired'
 
     return redirect(url_for('users.login'))
+
+
