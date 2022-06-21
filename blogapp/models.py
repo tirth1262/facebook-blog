@@ -59,3 +59,6 @@ class Likes(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     like = db.Column(db.Boolean, default=False)
 
+
+
+
