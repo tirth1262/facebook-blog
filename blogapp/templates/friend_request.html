@@ -16,37 +16,21 @@
                                 <div class="col-md-7 col-sm-7 ml-3">
                                     <h5><a href="#" class="profile-link">{{ friend_request.user.username }}</a></h5>
                                     <p>{{ friend_request.user.email }}</p>
-{#                                    <p class="text-muted">500m away</p>#}
                                 </div>
-                                <form action="" method="POST">
-                                    {% if friend_request.user.friend.status == 'pending' %}
-                                       <div class="col-md-3 col-sm-3">
-                                            <input type="hidden" name="friend_id" value="{{ friend_request.user.id }}">
-                                            <button class="btn btn-primary pull-right">request cancel</button>
-                                        </div>
-                                    {% else %}
-                                        <div class="container">
-                                            <div class="row">
+                                <div class="row">
+                                    <div class="mt-2">
+                                        <a class="accept_request add-button" id="{{friend_request.id}}"
+                                               href="{{ url_for('friends.add_friend_action') }}">
+                                               <button class="btn btn-primary pull-right">Accept</button></a>
+                                    </div>
+                                    <div class="mt-2">
+                                        <a class="dicline_request add-button ml-3" id="{{friend_request.id}}"
+                                               href="{{ url_for('friends.add_friend_action') }}">
+                                               <button class="btn btn-light btn-outline-dark ml-3 pull-right">Dicline</button></a>
+                                    </div>
 
-                                                <form method="POST" name="accept_form">
-                                                    <div class="col-md-3 col-sm-3 mt-1">
-                                                        <input type="hidden" name="friend_id" value="{{ friend_request.id }}">
-                                                        <button class="btn btn-primary pull-right">Accept</button>
-                                                    </div>
-                                                </form>
+                                </div>
 
-                                                <form method="POST" name="delete_form">
-                                                    <div class="col-md-3 col-sm-3 mt-1 ml-5">
-                                                        <input type="hidden" name="delete_id" value="{{ friend_request.id }}">
-                                                        <button class="btn btn-primary pull-right">decline</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-
-
-                                    {% endif %}
-                                </form>
                             </div>
                         </div>
                     {% endfor %}

@@ -1,11 +1,11 @@
 from blogapp import db, bcrypt
 from flask import render_template, redirect, flash, url_for, Blueprint, request, current_app
 from blogapp.users.forms import LoginForm, RegistrationForm, UpdateAccountForm, UpdatePassword
-from blogapp.models import User, Post, UserProfile, Friends
+from blogapp.models import User, Post, UserProfile
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from blogapp.users.mail import send_email
 from flask_login import login_user, current_user, logout_user, login_required
-from blogapp.posts.utils import save_profile_picture
+from blogapp.posts.utils import save_picture
 from sqlalchemy import desc
 
 users = Blueprint('users', __name__)
@@ -40,7 +40,6 @@ def register():
     if form.validate_on_submit():
         hs_pw = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(username=form.username.data, email=form.email.data, password=hs_pw)
-        # image_file = url_for('static', filename='profile_pics/' + 'default.jpg')
         email = form.email.data
         send_email(email)
         db.session.add(user)
@@ -72,7 +71,9 @@ def account():
     if request.method == 'POST':
         if form.validate_on_submit():
             if form.picture.data:
-                picture_file = save_profile_picture(form.picture.data)
+                size = 125
+                path = 'profile_pics'
+                picture_file = save_picture(form.picture.data, size, path)
                 current_user.user_profile.profile_image = picture_file
             current_user.username = form.username.data
             current_user.user_profile.firstname = form.firstname.data
@@ -89,7 +90,7 @@ def account():
         form.lastname.data = current_user.user_profile.lastname
         form.birthday.data = current_user.user_profile.birthday
 
-    return render_template('account.html', title='Account', form=form, condition=True )
+    return render_template('account.html', title='Account', form=form, condition=True)
 
 
 @users.route('/user/<string:username>')
@@ -128,5 +129,3 @@ def confirm_mail(token):
         return 'token expired'
 
     return redirect(url_for('users.login'))
-
-

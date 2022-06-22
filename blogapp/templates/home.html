@@ -19,18 +19,12 @@
                 </div>
 
                 <div>
-{#                    {% if condition %}#}
-{#                        <a href="{{ url_for('posts.dislike_post', post_id=post.id) }}" style="color: brown"><i class="fa fa-thumbs-down">disLike</i></a>#}
-{#                    {% else %}#}
-{#                        <a href="{{ url_for('posts.like_post', post_id=post.id) }}"><i class="fa fa-thumbs-up">Like</i></a>#}
-{#                    {% endif %}#}
-
                     {% if post.id in likes %}
-                            <a class="like-button unlike" id="unlike_{{ post.id }}"
+                            <a class="like-button unlike" id="{{ post.id }}"
                                href="{{ url_for('posts.like_action', post_id=post.id, action='unlike') }}">
                                 <i class="fa fa-thumbs-up" style="color: red"></i></a>
                     {% else %}
-                            <a class="like-button like" id="like_{{ post.id }}"
+                            <a class="like-button like" id="{{ post.id }}"
                                href="{{ url_for('posts.like_action', post_id=post.id, action='like') }}">
                                 <i class="fa fa-thumbs-up" style="color: #333333"></i></a>
                     {% endif %}

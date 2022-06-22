@@ -16,21 +16,16 @@
                                 <div class="col-md-7 col-sm-7 ml-3">
                                     <h5><a href="#" class="profile-link">{{ friend.username }}</a></h5>
                                     <p>{{ friend.email }}</p>
-{#                                    <p class="text-muted">500m away</p>#}
                                 </div>
-                                <form action="" method="POST">
-                                    {% if friend.friend.status == 'pending' %}
-                                       <div class="col-md-3 col-sm-3 container">
-                                            <input type="hidden" name="friend_id" value="{{ friend.id }}">
-                                            <button class="btn btn-primary pull-right">request cancel</button>
-                                        </div>
-                                    {% else %}
-                                        <div class="col-md-3 col-sm-3 mt-2 container">
-                                            <input type="hidden" name="friend_id" value="{{ friend.id }}">
-                                            <button class="btn btn-primary pull-right">Add Friend</button>
-                                        </div>
-                                    {% endif %}
-                                </form>
+                                {% if friend.id in lis %}
+                                        <a class="undo_request add-button" id="{{ friend.id }}"
+                                           href="{{ url_for('friends.add_friend_action',friend_id=friend.id) }}">
+                                           <button class="btn btn-light btn-outline-dark pull-right">Undo</button></a>
+                                {% else %}
+                                        <a class="add_request add-button" id="{{ friend.id }}"
+                                           href="{{ url_for('friends.add_friend_action', friend_id=friend.id) }}">
+                                             <button class="btn btn-primary pull-right">Add Friend</button></a>
+                                {% endif %}
                             </div>
                         </div>
                     {% endfor %}

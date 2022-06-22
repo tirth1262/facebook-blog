@@ -4,7 +4,8 @@ from blogapp.posts.forms import PostForm
 from blogapp.models import Post, Likes
 from flask_login import current_user, login_required
 from blogapp.posts.utils import save_picture
-import json
+from blogapp.decorators import count_friend_request
+
 
 posts = Blueprint('posts', __name__)
 
@@ -16,29 +17,10 @@ def post(post_id):
                            title=post_obj.title, post=post_obj)
 
 
-# @posts.route('/post/like/<int:post_id>',methods=['GET','POST'])
-# def like_post(post_id):
-#
-#     condition = True
-#     like_obj = Likes(user_id=current_user.id, post_id=post_id, like=True)
-#     db.session.add(like_obj)
-#     db.session.commit()
-#     return redirect(url_for('main.home', condition=condition))
-#
-#
-# @posts.route('/post/dislike/<int:post_id>',methods=['GET','POST'])
-# def dislike_post(post_id):
-#     condition = False
-#     like = Likes.query.filter(Likes.user_id == current_user.id).filter(Likes.post_id==post_id).filter(Likes.like==True).first()
-#     print(like)
-#     delete_like = Likes.query.get(like.id)
-#     delete_like.like = False
-#     db.session.commit()
-#     return redirect(url_for('main.home', condition=condition))
-
 @posts.route('/post/<int:post_id>/update/', methods=['GET', 'POST'])
+@count_friend_request
 @login_required
-def update_post(post_id):
+def update_post(post_id,friend_request=None):
     post_obj = Post.query.get_or_404(post_id)
     if post_obj.author != current_user:
         abort(403)
@@ -53,7 +35,7 @@ def update_post(post_id):
         form.title.data = post_obj.title
         form.content.data = post_obj.content
 
-    return render_template('create_post.html', title='Update Post', form=form, legend='Update Post')
+    return render_template('create_post.html', title='Update Post', form=form, friend_request=friend_request, legend='Update Post')
 
 
 @posts.route('/post/<int:post_id>/delete/', methods=['POST'])
@@ -70,46 +52,47 @@ def delete_post(post_id):
 
 
 @posts.route('/post/new/', methods=['GET', 'POST'])
+@count_friend_request
 @login_required
-def new_post():
+def new_post(friend_request=None):
     form = PostForm()
     if form.validate_on_submit():
-        picture_file = save_picture(form.picture.data)
+        path='images'
+        size=500
+        picture_file = save_picture(form.picture.data,size,path)
         post_obj = Post(title=form.title.data, content=form.content.data, is_public=form.is_public.data,
                         image_file=picture_file, author=current_user)
         db.session.add(post_obj)
         db.session.commit()
         flash(f'Your post has been created!', 'success')
         return redirect(url_for('main.home'))
-    return render_template('create_post.html', title='New Post', form=form, legend='New Post')
+    return render_template('create_post.html', title='New Post', form=form, friend_request=friend_request, legend='New Post')
 
 
 @posts.route('/like/', methods=['GET', 'POST'])
 def like_action():
     if request.method == "POST":
-        is_like = request.form['likeunlike']
-
         post_id = request.form['post_id']
 
-        like_obj = Likes.query.filter_by(user_id=current_user.id,post_id=post_id,like=True).first()
-        response={}
+        like_obj = Likes.query.filter_by(user_id=current_user.id, post_id=post_id, like=True).first()
+        response = {}
         if like_obj:
             like = Likes.query.filter(Likes.user_id == current_user.id).filter(Likes.post_id == post_id).filter(
                 Likes.like == True).first()
-            delete_like=Likes.query.get(like.id)
+            delete_like = Likes.query.get(like.id)
 
             db.session.delete(delete_like)
             db.session.commit()
-            response['like']=False
+            response['like'] = False
         else:
             like = Likes(user_id=current_user.id, post_id=post_id, like=True)
             db.session.add(like)
             db.session.commit()
-            response['like']=True
+            response['like'] = True
 
         like_values = Likes.query.filter(post_id == Likes.post_id).count()
         response['like_value'] = like_values
 
-
-    return jsonify(response)
-    # return redirect(url_for('main.home'))
+        return jsonify(response)
+    else:
+        return redirect('main.home')

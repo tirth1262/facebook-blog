@@ -17,7 +17,7 @@ class User(db.Model, UserMixin):
     posts = db.relationship('Post', backref='author', lazy=True)
     user_profile = db.relationship('UserProfile', backref='profile', uselist=False)
     friend = db.relationship('Friends', backref='friend', foreign_keys="[Friends.receiver_id]",lazy=True, uselist=False)
-
+    sender = db.relationship('Friends', backref='sender', foreign_keys="[Friends.sender_id]",lazy=True, uselist=False)
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
