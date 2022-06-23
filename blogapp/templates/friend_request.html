@@ -19,14 +19,14 @@
                                 </div>
                                 <div class="row">
                                     <div class="mt-2">
-                                        <a class="accept_request add-button" id="{{friend_request.id}}"
-                                               href="{{ url_for('friends.add_friend_action') }}">
-                                               <button class="btn btn-primary pull-right">Accept</button></a>
+                                        <a class="accept_request add-button btn btn-primary pull-right" id="accept_{{friend_request.id}}"
+                                               href="{{ url_for('friends.friend_requests') }}">
+                                               Accept</a>
                                     </div>
                                     <div class="mt-2">
-                                        <a class="dicline_request add-button ml-3" id="{{friend_request.id}}"
+                                        <a class="dicline_request add-button ml-3 btn btn-light btn-outline-dark ml-3 pull-right" id="dicline_{{friend_request.id}}"
                                                href="{{ url_for('friends.add_friend_action') }}">
-                                               <button class="btn btn-light btn-outline-dark ml-3 pull-right">Dicline</button></a>
+                                               Dicline</a>
                                     </div>
 
                                 </div>

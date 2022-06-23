@@ -7,6 +7,9 @@ s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
 
 
 def send_email(email):
+    """
+    THIS FUNCTION SEND EMAIL TO USER FOR EMAIL VALIDATION WHEN NEW USER REGISTRATION
+    """
     token = s.dumps(email)
     msg = Message('confirm email', sender='noreply@demo.com', recipients=[email])
     link = url_for('users.confirm_mail', token=token, _external=True)

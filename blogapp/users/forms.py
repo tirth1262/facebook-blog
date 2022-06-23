@@ -7,6 +7,9 @@ from flask_wtf.file import FileField, FileAllowed
 
 
 class LoginForm(FlaskForm):
+    """
+    THIS FORM FOR USER LOGIN SYSTEM
+    """
     email = EmailField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me ')
@@ -14,6 +17,9 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
+    """
+    THIS FORM FOR REGISTRATION OF NEW USER
+    """
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = EmailField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password',
@@ -27,12 +33,18 @@ class RegistrationForm(FlaskForm):
     submit = SubmitField('Sign Up')
 
     def validate_email(self, email):
+        """
+        THIS FUNCTION IS VERIFY EMAIL OF USER IF IT'S ALREADY EXITS THEN THROW AN ERROR
+        """
         user = User.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError('That email is taken. Please try a another email')
 
 
 class UpdateAccountForm(FlaskForm):
+    """
+    THIS FORM FROM UPDATE USER DETAIL IN ACCOUNT FIELD.
+    """
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = EmailField('Email')
     firstname = StringField('First name', validators=[DataRequired(), Length(min=2, max=20)])
@@ -43,6 +55,9 @@ class UpdateAccountForm(FlaskForm):
 
 
     def validate_username(self, username):
+        """
+        THIS FUNCTION IS VERIFY USERNAME OF USER IF IT'S ALREADY EXITS THEN THROW AN ERROR
+        """
         if current_user.username != username.data:
             user = User.query.filter_by(username=username.data).first()
             if user:
@@ -50,6 +65,9 @@ class UpdateAccountForm(FlaskForm):
 
 
 class UpdatePassword(FlaskForm):
+    """
+    THIS IS UPDATE PASSWORD FORM FOR UPDATE PASSWORD
+    """
     old_password = PasswordField('Old Password', validators=[DataRequired()])
     new_password = PasswordField('New Password',
                                  validators=[DataRequired(), Length(min=8, message="Password be at least 8 characters"),

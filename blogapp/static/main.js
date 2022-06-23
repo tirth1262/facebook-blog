@@ -1,25 +1,23 @@
 $(document).ready(function () {
-      $(".accept_request, .dicline_request").click(function (event) {
+    $(".remove-button").click(function (event) {
             event.preventDefault();
 
             var id = this.id;
+            var split_id = id.split("_");
 
-            var friend_request_id = id;
+            var text = split_id[0];
+            var remove_friend_id = split_id[1];
 
             $.ajax({
                     type: 'POST',
-                    url: "/friend_requests/",
+                    url: "/all_friends/",
                     data: {
-                        'friend_request_id': friend_request_id
+                        'text': text,
+                        'remove_friend_id': remove_friend_id
+
                     },
                     success: function (data) {
-                        var add_request = data['add_request'];
-                        if (add_request) {
-                            addf = `<button class="btn btn-light btn-outline-dark pull-right">Undo</button>`;
-                        } else {
-                            addf = `<button class="btn btn-primary pull-right" >Add Friend</button>`;
-                        }
-                        $("#" + friend_id).html(addf);
+                        $("#" + id).parent().parent().remove();
 
                     },
                 }
@@ -34,6 +32,45 @@ $(document).ready(function () {
 
 
 
+
+
+
+
+
+
+
+
+
+
+    $(".add-button").click(function (event) {
+            event.preventDefault();
+
+            var id = this.id;
+            var split_id = id.split("_");
+
+            var text = split_id[0];
+            var friend_request_id = split_id[1];
+
+            $.ajax({
+                    type: 'POST',
+                    url: "/friend_requests/",
+                    data: {
+                        'text': text,
+                        'friend_request_id': friend_request_id
+
+                    },
+                    success: function (data) {
+                        $("#" + id).parent().parent().parent().remove();
+
+                    },
+                }
+            )
+
+
+        }
+    )
+
+
     $(".undo_request, .add_request").click(function (event) {
             event.preventDefault();
 
@@ -45,7 +82,8 @@ $(document).ready(function () {
                     type: 'POST',
                     url: "/add_friend_action/",
                     data: {
-                        'friend_id': friend_id
+                        'friend_id': friend_id,
+
                     },
                     success: function (data) {
                         var add_request = data['add_request'];
@@ -90,7 +128,7 @@ $(document).ready(function () {
                 } else {
                     tag = "<i class=\"fa fa-thumbs-up\" style='color: #333333'>" + like_value + "</i>"
                 }
-                $("#"+post_id1).html(tag);
+                $("#" + post_id1).html(tag);
 
 
             },
