@@ -31,7 +31,7 @@ class Post(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     likes = db.relationship('Likes', backref='likes', lazy='dynamic')
-
+    user_obj = db.relationship('User' , backref='user_obj')
     def __repr__(self):
         return f"Post('{self.title}')"
 
@@ -61,5 +61,11 @@ class Likes(db.Model):
     like = db.Column(db.Boolean, default=False)
 
 
+class Comments(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
+    message = db.Column(db.Text, default=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 

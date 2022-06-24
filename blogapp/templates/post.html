@@ -17,7 +17,19 @@
       <h2 class="article-title">{{ post.title }}</h2>
       <p class="article-content">{{ post.content }}</p>
         <img src="{{ url_for('static', filename='images/' + post.image_file)}}">
+        <div class="mt-3 ">
+            {% if post.id in likes %}
+                    <a class="like-button unlike" id="{{ post.id }}"
+                       href="{{ url_for('posts.like_action', post_id=post.id, action='unlike') }}">
+                        <i class="fa fa-thumbs-up" style="color: red">{{ post.likes.count() }}</i></a>
+            {% else %}
+                    <a class="like-button like" id="{{ post.id }}"
+                       href="{{ url_for('posts.like_action', post_id=post.id, action='like') }}">
+                        <i class="fa fa-thumbs-up" style="color: #333333">{{ post.likes.count() }}</i></a>
+            {% endif %}
+        </div>
     </div>
+
   </article>
   <!-- Modal -->
   <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">

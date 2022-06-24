@@ -7,10 +7,10 @@ from blogapp.decorators import count_friend_request
 main = Blueprint('main', __name__)
 
 
-@main.route("/", methods=['GET', 'POST'])
+# @main.route("/", methods=['GET', 'POST'])
 @main.route('/home/', methods=['GET', 'POST'])
-@count_friend_request
 @login_required
+@count_friend_request
 def home(friend_request=None):
     page = request.args.get('page', 1, type=int)
     """
@@ -19,7 +19,7 @@ def home(friend_request=None):
     """
     friends_list = []
     receiver_obj = Friends.query.with_entities(Friends.receiver_id).filter_by(sender_id=current_user.id,
-                                                                              status='accepted').all()
+                                                                              status='accepted', is_blocked=False).all()
     for i in receiver_obj:
         friends_list.append(i[0])
 
@@ -28,7 +28,7 @@ def home(friend_request=None):
     WHICH 'receiver_id' IS 'current_user.id & STATUS IS 'accepted'
     """
     sender_obj = Friends.query.with_entities(Friends.sender_id).filter_by(receiver_id=current_user.id,
-                                                                          status='accepted').all()
+                                                                          status='accepted', is_blocked=False).all()
     for j in sender_obj:
         friends_list.append(j[0])
 

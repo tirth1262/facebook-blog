@@ -1,4 +1,40 @@
+
+
+
 $(document).ready(function () {
+    $(".comment").submit(function (event) {
+            event.preventDefault();
+
+            var id = this.id;
+            console.log(id)
+            var split_id = id.split("_");
+
+            var text = split_id[0];
+            var comment_post_id = split_id[1];
+            var input_tag=$("#input_"+comment_post_id).val()
+            console.log(input_tag)
+
+            $.ajax({
+                    type: 'POST',
+                    url: "/comment/",
+                    data: {
+                        'text': text,
+                        'comment_post_id': comment_post_id,
+                        'input_tag':input_tag
+
+                    },
+                    success: function (data) {
+                        $("#comment_" + comment_post_id).trigger("reset");
+
+                    },
+                }
+            )
+
+
+        }
+    )
+
+
     $(".remove-button").click(function (event) {
             event.preventDefault();
 
@@ -25,21 +61,7 @@ $(document).ready(function () {
 
 
         }
-    )
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    );
 
 
     $(".add-button").click(function (event) {
@@ -68,7 +90,7 @@ $(document).ready(function () {
 
 
         }
-    )
+    );
 
 
     $(".undo_request, .add_request").click(function (event) {
@@ -100,7 +122,7 @@ $(document).ready(function () {
 
 
         }
-    )
+    );
 
     // like and unlike click
     $(".like, .unlike").click(function (event) {
@@ -136,8 +158,7 @@ $(document).ready(function () {
                 console.log(textStatus);
             }
 
-        });
-
+        })
     });
 
-});
+})
