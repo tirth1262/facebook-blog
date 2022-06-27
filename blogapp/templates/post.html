@@ -28,6 +28,43 @@
                         <i class="fa fa-thumbs-up" style="color: #333333">{{ post.likes.count() }}</i></a>
             {% endif %}
         </div>
+        <div>
+            <h3>Comments</h3>
+            {% for comment in comments.items %}
+
+                <div>
+                    <hr>
+                    <p><img class="rounded-circle article-img"
+                            style="width: 30px !important;height: 30px !important;"
+                            src="{{ url_for('static', filename='profile_pics/' + comment.comment_user.user_profile.profile_image) }}"/>
+                        <span class="" style="margin-left: -10px;font-size: 15px">
+                            <b>{{ comment.comment_user.username }}</b>
+                        </span>
+                        {% if current_user.id == comment.user_id %}
+                            <span style="margin-top: -2px;" class="pull-right">
+                                <a class="btn btn-danger btn-sm delete_comment" id="delete_{{ comment.id }}" style="color:#000;">delete</a>
+                            </span>
+                        {% endif %}
+                    </p>
+                    <p style="margin: -15px 0 2px 45px;color: black;font-style: italic;font-size: 20px;">
+                        {{ comment.message }}
+                    </p>
+                     <hr>
+                </div>
+
+            {% endfor %}
+            {% for page_num in comments.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+              {% if page_num %}
+                {% if comments.page == page_num %}
+                  <a class="btn btn-info mb-4" href="{{ url_for('posts.post',post_id=post.id,page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                  <a class="btn btn-outline-info mb-4" href="{{ url_for('posts.post',post_id=post.id, page=page_num) }}">{{ page_num }}</a>
+                {% endif %}
+              {% else %}
+                ...
+              {% endif %}
+            {% endfor %}
+        </div>
     </div>
 
   </article>

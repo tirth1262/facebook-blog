@@ -1,8 +1,38 @@
-
-
-
 $(document).ready(function () {
+    /*THIS 'delete_comment' SELECTOR FUNCTION DELETE COMMENT */
+    //delete comment
+    $(".delete_comment").click(function (event) {
+            event.preventDefault();
+
+            var id = this.id;
+            var split_id = id.split("_");
+
+            var text = split_id[0];
+            var delete_comment_id = split_id[1];
+
+
+            $.ajax({
+                    type: 'POST',
+                    url: "/delete_comment/",
+                    data: {
+                        'text': text,
+                        'delete_comment_id': delete_comment_id,
+
+                    },
+                    success: function (data) {
+                        $("#delete_" + delete_comment_id).parent().parent().parent().remove();
+
+                    },
+                }
+            )
+
+
+        }
+    );
+
+    //add comments
     $(".comment").submit(function (event) {
+        /*THIS 'comment' SELECTOR FUNCTION ADD COMMENT */
             event.preventDefault();
 
             var id = this.id;
@@ -11,7 +41,7 @@ $(document).ready(function () {
 
             var text = split_id[0];
             var comment_post_id = split_id[1];
-            var input_tag=$("#input_"+comment_post_id).val()
+            var input_tag = $("#input_" + comment_post_id).val()
             console.log(input_tag)
 
             $.ajax({
@@ -20,7 +50,7 @@ $(document).ready(function () {
                     data: {
                         'text': text,
                         'comment_post_id': comment_post_id,
-                        'input_tag':input_tag
+                        'input_tag': input_tag
 
                     },
                     success: function (data) {
@@ -34,8 +64,9 @@ $(document).ready(function () {
         }
     )
 
-
+    //remove friend
     $(".remove-button").click(function (event) {
+        /*THIS 'remove-button' SELECTOR FUNCTION DELETE Friend from friends table */
             event.preventDefault();
 
             var id = this.id;
@@ -92,8 +123,9 @@ $(document).ready(function () {
         }
     );
 
-
+    // add-friend-request & undo-friend-request
     $(".undo_request, .add_request").click(function (event) {
+        /*THIS AJAX CALL IS FOR ADD-FRIEND-REQUEST AND UNDO-FRIEND-REQUEST  */
             event.preventDefault();
 
             var id = this.id;
@@ -126,6 +158,7 @@ $(document).ready(function () {
 
     // like and unlike click
     $(".like, .unlike").click(function (event) {
+        /*THIS AJAX CALL FOR LIKE AND UNLIKE POST*/
 
         event.preventDefault();
 

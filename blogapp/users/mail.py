@@ -13,5 +13,18 @@ def send_email(email):
     token = s.dumps(email)
     msg = Message('confirm email', sender='noreply@demo.com', recipients=[email])
     link = url_for('users.confirm_mail', token=token, _external=True)
-    msg.body = f'Your link is {link}.'
+    msg.body = f'''To confirm your email, visit the following link:
+{link}
+If you did not make this request then simply ignore this Because this is a spam message.
+'''
+    mail.send(msg)
+
+def reset_password(email):
+    token = s.dumps(email)
+    msg = Message('confirm email', sender='noreply@demo.com', recipients=[email])
+    link = url_for('users.confirm_reset_password_mail', token=token,_external=True)
+    msg.body = f'''To reset your password, visit the following link:
+{link}
+If you did not make this request then simply ignore this email and no changes will be made.
+'''
     mail.send(msg)

@@ -1,6 +1,8 @@
 from blogapp import db, login_manager
 from flask_login import UserMixin
 from datetime import datetime
+from itsdangerous import URLSafeTimedSerializer
+from flask import current_app
 
 
 @login_manager.user_loader
@@ -18,6 +20,16 @@ class User(db.Model, UserMixin):
     user_profile = db.relationship('UserProfile', backref='profile', uselist=False)
     friend = db.relationship('Friends', backref='friend', foreign_keys="[Friends.receiver_id]",lazy=True, uselist=False)
     sender = db.relationship('Friends', backref='sender', foreign_keys="[Friends.sender_id]",lazy=True, uselist=False)
+
+    @staticmethod
+    def verify_reset_token(token):
+        s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+        try:
+            email = s.loads(token, max_age=3600)
+        except:
+            return None
+        return User.query.filter_by(email=email).first()
+
     def __repr__(self):
         return '<User {}>'.format(self.username)
 
@@ -67,5 +79,5 @@ class Comments(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey('post.id'), nullable=False)
     message = db.Column(db.Text, default=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-
+    comment_user = db.relationship('User', backref='comment_user')
 

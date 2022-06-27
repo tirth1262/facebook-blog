@@ -55,3 +55,10 @@ def home(friend_request=None):
 @main.route('/about/')
 def about():
     return render_template('about.html', title='About')
+
+# pythonistas
+# pyders
+# interpreters
+# Pythagoras
+
+# Not to be confused by the theorem, this Greek name means “python market.”
