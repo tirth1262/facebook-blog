@@ -8,6 +8,8 @@ from blogapp.users.mail import send_email, reset_password
 from flask_login import login_user, current_user, logout_user, login_required
 from blogapp.posts.utils import save_picture
 from sqlalchemy import desc
+from blogapp.helpers import post_likes, friend_list
+from blogapp.decorators import count_friend_request
 
 users = Blueprint('users', __name__)
 s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
@@ -94,12 +96,19 @@ def account():
     return render_template('account.html', title='Account', form=form, condition=True)
 
 
-@users.route('/user/<string:username>')
+@users.route('/user/<string:username>',methods=['POST', 'GET'])
 @login_required
-def user_posts(username):
+@count_friend_request
+def user_posts(username, friend_request=None):
+    page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
-    posts = Post.query.filter_by(author=user).order_by(desc(Post.created_at))
-    return render_template('user_posts.html', posts=posts, user=user)
+    posts = Post.query.filter_by(author=user).order_by(desc(Post.created_at)).paginate(page=page, per_page=2)
+    likes = post_likes()
+    list_of_friends = friend_list(is_blocked=False)
+    pending_friend_requests = friend_list(is_blocked=False, status='pending')
+    return render_template('user_posts.html', posts=posts, user=user,
+                           likes=likes, pending_friend_requests=pending_friend_requests,
+                           lis=list_of_friends, friend_request=friend_request)
 
 
 @users.route('/update_password/', methods=['GET', 'POST'])

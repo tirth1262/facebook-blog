@@ -1,15 +1,16 @@
 from flask_login import login_required, current_user
-from flask import render_template, request, Blueprint, redirect, url_for, jsonify
+from flask import render_template, request, Blueprint, jsonify, redirect, url_for, flash
 from blogapp import db
-from blogapp.models import User, Friends
+from blogapp.models import User, Friends, UserProfile
 from blogapp.decorators import count_friend_request
+from blogapp.helpers import friend_list
 
 friends = Blueprint('friends', __name__)
 
 
 @friends.route('/suggested_friends/', methods=['GET', 'POST'])
-@count_friend_request
 @login_required
+@count_friend_request
 def suggested_friends(friend_request=None):
     list1 = []
     """THIS QUERY FETCH ALL 'sender_id' FROM FRIENDS TABLE  WHICH 'receiver_id' IS 'current_user.id """
@@ -92,32 +93,15 @@ def all_friends():
             delete_friend_obj.is_blocked = True
             db.session.commit()
 
-    """
-        THIS QUERY IS GET ALL 'receiver_id' FORM FRIENDS TABLE 
-        WHICH 'sender_id' IS 'current_user.id & STATUS IS 'accepted'
-    """
-    list1 = []
-    receiver_obj = Friends.query.with_entities(Friends.receiver_id).filter_by(sender_id=current_user.id,
-                                                                              status='accepted', is_blocked=False).all()
-    for i in receiver_obj:
-        list1.append(i[0])
+    is_blocked = False  # To fetch a block user we passed static is_blocked in friend_list function
 
-    """
-       THIS QUERY IS GET ALL 'sender_id' FORM FRIENDS TABLE 
-       WHICH 'receiver_id' IS 'current_user.id & STATUS IS 'accepted'
-    """
-    sender_obj = Friends.query.with_entities(Friends.sender_id).filter_by(receiver_id=current_user.id,
-                                                                          status='accepted', is_blocked=False).all()
-    for j in sender_obj:
-        list1.append(j[0])
-
-    set1 = set(list1)  # TO REMOVE DUPLICATES ID FROM LIST1 WE USE THIS SET
-    list2 = list(set1)
+    """called friend_list function from helpers.py to fetch all friends"""
+    friends_list = friend_list(is_blocked)
 
     """THIS QUERY FETCH ALL FRIENDS FROM FRIEND TABLE WHICH IN LIST2"""
-    friends_list = User.query.filter(User.id.in_(list2)).filter(User.id != current_user.id).all()
+    all_friends_list = User.query.filter(User.id.in_(friends_list)).filter(User.id != current_user.id).all()
 
-    return render_template('friend_list.html', friends=friends_list)
+    return render_template('friend_list.html', friends=all_friends_list)
 
 
 @friends.route('/add_friend_action/', methods=['GET', 'POST'])
@@ -143,3 +127,59 @@ def add_friend_action():
         return jsonify(response)
     else:
         return None
+
+
+@friends.route('/block_list/', methods=['GET', 'POST'])
+@login_required
+def block_list():
+    if request.method == 'POST':
+        friend_id = request.form["block_friend_id"]
+
+        unblock_friend_obj = Friends.query.filter(
+            (Friends.sender_id == current_user.id) | (Friends.receiver_id == current_user.id)).filter(
+            (Friends.sender_id == friend_id) | (Friends.receiver_id == friend_id)).filter(
+            Friends.is_blocked == True).first()
+
+        unblock_friend_obj.is_blocked = False
+        db.session.commit()
+
+    is_blocked = True  # To fetch a block user we passed static is_blocked in friend_list function
+
+    """called friend_list function from helpers.py to fetch all friends"""
+    friends_list = friend_list(is_blocked)
+
+    """THIS QUERY FETCH ALL FRIENDS FROM FRIEND TABLE WHICH IN LIST2"""
+    all_friends_list = User.query.filter(User.id.in_(friends_list)).filter(User.id != current_user.id).all()
+    if not all_friends_list:
+        flash('There is a no block user', 'info')
+
+    return render_template('block_list.html', block_friends=all_friends_list)
+
+
+@friends.route('/search/', methods=['GET', 'POST'])
+@login_required
+def search():
+    if request.method == 'POST':
+        search_obj = request.form["search"]
+        look_for = '%{0}%'.format(search_obj)
+        user_obj = UserProfile.query \
+            .with_entities(UserProfile.user_id) \
+            .filter((UserProfile.firstname.ilike(look_for)) | (UserProfile.lastname.ilike(look_for))) \
+            .filter(UserProfile.user_id != current_user.id).all()
+
+        user_list = []
+        for i in user_obj:
+            user_list.append(i[0])
+
+        search_users = User.query.filter(User.id.in_(user_list)).all()
+        if not search_users:
+            flash('No users', 'info')
+
+        list_of_friends = friend_list(is_blocked=False)
+        pending_friend_requests = friend_list(is_blocked=False, status='pending')
+
+    else:
+        return redirect(url_for('main.home'))
+
+    return render_template('search.html', lis=list_of_friends, all_search_user=search_users,
+                           pending_friend_requests=pending_friend_requests)

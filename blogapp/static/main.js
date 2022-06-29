@@ -1,4 +1,35 @@
 $(document).ready(function () {
+    //unblock friend
+    $(".unblock_friend").click(function (event) {
+            event.preventDefault();
+
+            var id = this.id;
+            var split_id = id.split("_");
+
+            var text = split_id[0];
+            var block_friend_id = split_id[1];
+
+
+            $.ajax({
+                    type: 'POST',
+                    url: "/block_list/",
+                    data: {
+                        'text': text,
+                        'block_friend_id': block_friend_id,
+
+                    },
+                    success: function (data) {
+                        $("#block_" + block_friend_id).parent().parent().parent().remove();
+
+                    },
+                }
+            )
+
+
+        }
+    );
+
+
     /*THIS 'delete_comment' SELECTOR FUNCTION DELETE COMMENT */
     //delete comment
     $(".delete_comment").click(function (event) {

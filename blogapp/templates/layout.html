@@ -30,7 +30,12 @@
                 <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
                     <a class="nav-item nav-link" href="{{ url_for('main.about') }}">About</a>
+                     <form class="form-inline" action="{{ url_for('friends.search') }}" method="POST">
+                        <input class="form-control mr-sm-2" type="text" placeholder="Search" name="search" required>
+                        <button class="btn btn-success" type="submit">Search</button>
+                    </form>
                 </div>
+
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if current_user.is_authenticated %}
@@ -72,6 +77,8 @@
                     {% if condition %}
                         <li class="list-group-item list-group-item-light"><a
                                 href="{{ url_for('friends.all_friends') }}">Friends</a></li>
+                        <li class="list-group-item list-group-item-light"><a
+                                href="{{ url_for('friends.block_list') }}">block list</a></li>
 
                     {% else %}
                         <li class="list-group-item list-group-item-light"><a
