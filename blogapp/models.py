@@ -42,7 +42,8 @@ class Post(db.Model):
     is_public = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    likes = db.relationship('Likes', backref='likes', lazy='dynamic')
+    likes = db.relationship('Likes',cascade="all,delete", backref='likes', lazy='dynamic')
+    comments = db.relationship('Comments',cascade="all,delete", backref='comments', lazy='dynamic')
     user_obj = db.relationship('User' , backref='user_obj')
     def __repr__(self):
         return f"Post('{self.title}')"

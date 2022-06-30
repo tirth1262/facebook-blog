@@ -385,3 +385,15 @@ img.profile-photo-lg{
   width: 80px;
   border-radius: 50%;
 }
+
+
+.oauth-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#oauth-google img {
+  margin-right: 1.5rem;
+  margin-top: -5px;
+}

@@ -86,7 +86,7 @@
                             <span>{{ friend_request }}</span></a>
                         </li>
                     {% endif %}
-                    <li class="list-group-item list-group-item-light"><a href="#">Posts</a></li>
+                    <li class="list-group-item list-group-item-light"><a href="{{ url_for('main.home') }}">Posts</a></li>
                     <li class="list-group-item list-group-item-light"><a href="{{ url_for('users.update_password') }}">Update
                         password</a></li>
                 </ul>
