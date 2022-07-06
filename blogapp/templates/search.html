@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="people-nearby">
+                    {% for friend in all_search_user %}
+                        <div class="nearby-user">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-2">
+                                    <img src="{{ url_for('static',filename='profile_pics/'+ friend.user_profile.profile_image) }}"
+                                         alt="user" class="profile-photo-lg">
+                                </div>
+                                <div class="col-md-7 col-sm-7 ml-3">
+                                    <h5><a href="{{ url_for('users.user_posts', username=friend.username) }}" class="profile-link">{{ friend.username }}</a></h5>
+                                    <p>{{ friend.email }}</p>
+                                </div>
+                                {% if friend.id in lis %}
+                                        <p></p>
+                                {% else %}
+                                    {% if friend.id in pending_friend_requests %}
+                                        <a class="undo_request add-button" id="{{ friend.id }}"
+                                           href="{{ url_for('friends.add_friend_action',friend_id=friend.id) }}">
+                                           <button class="btn btn-light btn-outline-dark pull-right">Undo</button></a>
+                                    {% else %}
+                                        <a class="add_request add-button" id="{{ friend.id }}"
+                                           href="{{ url_for('friends.add_friend_action', friend_id=friend.id) }}">
+                                             <button class="btn btn-primary pull-right">Add Friend</button></a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

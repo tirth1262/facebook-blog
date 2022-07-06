@@ -1,0 +1,40 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="people-nearby">
+                    {% for friend in friends %}
+                        <div class="nearby-user">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-2">
+                                    <img src="{{ url_for('static',filename='profile_pics/'+ friend.user_profile.profile_image) }}"
+                                         alt="user" class="profile-photo-lg">
+                                </div>
+                                <div class="col-md-7 col-sm-7 ml-3">
+                                    <h5><a href="#" class="profile-link">{{ friend.username }}</a></h5>
+                                    <p>{{ friend.email }}</p>
+
+                                </div>
+                                <div class="mt-2">
+                                    <a class="remove_friend remove-button ml-3 btn btn-danger ml-3 pull-right" id="remove_{{friend.id}}"
+                                               href="{{ url_for('friends.all_friends') }}">
+                                               Remove Friend</a>
+                                    <a class="block_friend remove-button ml-3 btn btn-danger ml-3 pull-right" id="block_{{friend.id}}"
+                                               href="{{ url_for('friends.all_friends') }}">
+                                               block friend</a>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    {% endfor %}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

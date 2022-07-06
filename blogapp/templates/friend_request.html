@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="people-nearby">
+                    {% for friend_request in friend_requests %}
+                        <div class="nearby-user">
+                            <div class="row">
+                                <div class="col-md-2 col-sm-2">
+                                    <img src="{{ url_for('static',filename='profile_pics/'+ friend_request.user.user_profile.profile_image) }}"
+                                         alt="user" class="profile-photo-lg">
+                                </div>
+                                <div class="col-md-7 col-sm-7 ml-3">
+                                    <h5><a href="#" class="profile-link">{{ friend_request.user.username }}</a></h5>
+                                    <p>{{ friend_request.user.email }}</p>
+                                </div>
+                                <div class="row">
+                                    <div class="mt-2">
+                                        <a class="accept_request add-button btn btn-primary pull-right" id="accept_{{friend_request.id}}"
+                                               href="{{ url_for('friends.friend_requests') }}">
+                                               Accept</a>
+                                    </div>
+                                    <div class="mt-2">
+                                        <a class="dicline_request add-button ml-3 btn btn-light btn-outline-dark ml-3 pull-right" id="dicline_{{friend_request.id}}"
+                                               href="{{ url_for('friends.add_friend_action') }}">
+                                               Dicline</a>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    {% endfor %}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

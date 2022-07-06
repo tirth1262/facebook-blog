@@ -1,5 +1,21 @@
+
 {% extends "layout.html" %}
 {% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="card" style="width: 7.8125rem; height: 7.8125rem !important;">
+              <img class="card-img-top" src="{{ url_for('static', filename='profile_pics/'+user.user_profile.profile_image) }}" alt="Card image cap">
+            </div>
+            <div class="user-detail" style="margin-left: 20px">
+                <h3>User Name : {{ user.username }}</h3>
+                <p>Email : {{ user.email }}</p>
+                <p>First Name : {{ user.user_profile.firstname }}</p>
+                <p>Last Name : {{ user.user_profile.lastname }}</p>
+                <p>Birthday : {{ user.user_profile.birthday }}</p>
+            </div>
+        </div>
+    </div>
+    <h1 class="mb-2 mt-3">Posts of {{ user.username }}</h1>
     {% for post in posts.items %}
         <article class="media content-section">
 
@@ -7,8 +23,9 @@
                  src="{{ url_for('static',filename='profile_pics/'+ post.user_obj.user_profile.profile_image) }}">
             <div class="media-body">
                 <div class="article-metadata">
-                    <a class="mr-2"
-                       href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>
+                    <a>{{ post.author.username }}</a>
+{#                    <a class="mr-2"#}
+{#                       href="{{ url_for('users.user_posts', username=post.author.username) }}">{{ post.author.username }}</a>#}
                     <small class="text-muted">{{ post.created_at.strftime('%Y-%m-%d') }}</small>
                 </div>
                 <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a>
