@@ -171,10 +171,10 @@ facebook = oauth.register(
     client_secret=current_app.config["FACEBOOK_CLIENT_SECRET"],
     access_token_url='https://graph.facebook.com/oauth/access_token',
     access_token_params=None,
-    authorize_url="https://graph.facebook.com/oauth/authorize",
+    authorize_url="https://www.facebook.com/dialog/oauth",
     authorize_params=None,
-    api_base_url='https://api.facebook.com/',
-    client_kwargs={'scope': 'openid profile email'},
+    api_base_url='https://graph.facebook.com/',
+    client_kwargs={'scope': 'email'},
 )
 
 
