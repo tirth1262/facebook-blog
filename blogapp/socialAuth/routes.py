@@ -192,28 +192,29 @@ def facebook_authorized():
     facebook = oauth.create_client('facebook')
     facebook.authorize_access_token()
     resp = facebook.get('https://graph.facebook.com/me?fields=id,name,first_name,birthday,last_name,email,picture{url}').json()
-    user = User.query.filter_by(email=resp['email']).first()
-    if user:
-        login_user(user)
-        return redirect(url_for('main.home'))
-    else:
-        user_obj = User(username=resp['name'],
-                        email=resp['email'],
-                        password=current_app.config["PASSWORD"],
-                        is_active=True)
-
-        db.session.add(user_obj)
-        db.session.commit()
-        # user = User.query.filter_by(email=resp['email']).first()
-        profile = UserProfile(firstname=resp['first_name'], lastname=resp['last_name'],
-                              profile_image=resp['data']['url'], birthday=resp['birthday'],
-                              user_id=user_obj.id)
-        db.session.add(profile)
-        db.session.commit()
-        login_user(user_obj)
-        return redirect(url_for('main.home'))
-
-    return 'done'
+    return resp
+    # user = User.query.filter_by(email=resp['email']).first()
+    # if user:
+    #     login_user(user)
+    #     return redirect(url_for('main.home'))
+    # else:
+    #     user_obj = User(username=resp['name'],
+    #                     email=resp['email'],
+    #                     password=current_app.config["PASSWORD"],
+    #                     is_active=True)
+    #
+    #     db.session.add(user_obj)
+    #     db.session.commit()
+    #     # user = User.query.filter_by(email=resp['email']).first()
+    #     profile = UserProfile(firstname=resp['first_name'], lastname=resp['last_name'],
+    #                           profile_image=resp['data']['url'], birthday=resp['birthday'],
+    #                           user_id=user_obj.id)
+    #     db.session.add(profile)
+    #     db.session.commit()
+    #     login_user(user_obj)
+    #     return redirect(url_for('main.home'))
+    #
+    # return 'done'
 
 
 
