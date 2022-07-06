@@ -201,11 +201,11 @@ twitter = oauth.register(
     name='twitter',
     client_id=current_app.config['TWITTER_CLIENT_ID'],
     client_secret=current_app.config['TWITTER_CLIENT_SECRET'],
-    api_base_url='https://api.twitter.com/1.1/',
     request_token_url='https://api.twitter.com/oauth/request_token',
     access_token_url='https://api.twitter.com/oauth/access_token',
     authorize_url='https://api.twitter.com/oauth/authenticate',
-    client_kwargs={'scope': 'user:email'},
+    api_base_url='https://api.twitter.com/1.1/',
+    client_kwargs=None,
 
 )
 
@@ -223,4 +223,4 @@ def twitter_authorize():
     resp = oauth.twitter.get(url, params={'skip_status': True})
     user = resp.json()
     print(user)
-    return user
+    return user['email']
