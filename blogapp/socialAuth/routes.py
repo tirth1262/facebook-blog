@@ -191,7 +191,7 @@ def facebook_login():
 def facebook_authorized():
     facebook = oauth.create_client('facebook')
     facebook.authorize_access_token()
-    resp = facebook.get('user').json()
+    resp = facebook.get('https://graph.facebook.com/me?fields=id,name,email,picture{url}').json()
     print(resp)
 
     return resp
