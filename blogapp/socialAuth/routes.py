@@ -161,7 +161,7 @@ def linkedin_authorize():
         db.session.commit()
         login_user(user_obj)
         return redirect(url_for('main.home'))
-
+        # done
     return 'done'
 
 
