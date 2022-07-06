@@ -174,7 +174,7 @@ facebook = oauth.register(
     authorize_url="https://graph.facebook.com/oauth/authorize",
     authorize_params=None,
     api_base_url='https://api.facebook.com/',
-    client_kwargs={'scope': 'openid email profile'},
+    client_kwargs={'scope': 'email'},
 )
 
 
@@ -205,6 +205,7 @@ twitter = oauth.register(
     request_token_url='https://api.twitter.com/oauth/request_token',
     access_token_url='https://api.twitter.com/oauth/access_token',
     authorize_url='https://api.twitter.com/oauth/authenticate',
+    client_kwargs={'scope': 'user:email'},
 
 )
 
