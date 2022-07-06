@@ -23,7 +23,8 @@ def post(post_id):
     post_comments = Comments.query.filter_by(post_id=post_id).paginate(page=page, per_page=2)
 
     return render_template('post.html',
-                           title=post_obj.title, post=post_obj, likes=likes, comments=post_comments)
+                           title=post_obj.title,
+                           post=post_obj, likes=likes, comments=post_comments)
 
 
 @posts.route('/post/<int:post_id>/update/', methods=['GET', 'POST'])
@@ -44,7 +45,9 @@ def update_post(post_id, friend_request=None):
         form.title.data = post_obj.title
         form.content.data = post_obj.content
 
-    return render_template('create_post.html', title='Update Post', form=form, friend_request=friend_request,
+    return render_template('create_post.html', title='Update Post',
+                           form=form,
+                           friend_request=friend_request,
                            legend='Update Post')
 
 
@@ -70,23 +73,27 @@ def new_post(friend_request=None):
         path = 'images'
         size = 500
         picture_file = save_picture(form.picture.data, size, path)
-        post_obj = Post(title=form.title.data, content=form.content.data, is_public=form.is_public.data,
+        post_obj = Post(title=form.title.data, content=form.content.data,
+                        is_public=form.is_public.data,
                         image_file=picture_file, author=current_user)
         db.session.add(post_obj)
         db.session.commit()
         flash(f'Your post has been created!', 'success')
         return redirect(url_for('main.home'))
-    return render_template('create_post.html', title='New Post', form=form, friend_request=friend_request,
+    return render_template('create_post.html', title='New Post',
+                           form=form, friend_request=friend_request,
                            legend='New Post')
 
 
 @posts.route('/like/', methods=['GET', 'POST'])
+@login_required
 def like_action():
     if request.method == "POST":
         post_id = request.form['post_id']
 
         """THIS QUERY CONFIRM THAT POST IS LIKED BY CURRENT_USER OR NOT"""
-        like_obj = Likes.query.filter_by(user_id=current_user.id, post_id=post_id, like=True).first()
+        like_obj = Likes.query.filter_by(user_id=current_user.id,
+                                         post_id=post_id, like=True).first()
         response = {}
         if like_obj:
             delete_like = Likes.query.get(like_obj.id)
@@ -105,10 +112,14 @@ def like_action():
 
         return jsonify(response)
     else:
-        return redirect('main.home')
+        if current_user.is_authenticated:
+            return redirect(url_for('main.home'))
+        else:
+            return redirect(url_for('users.login'))
 
 
 @posts.route('/comment/', methods=['GET', 'POST'])
+@login_required
 def comment():
     if request.method == 'POST':
         """THIS TWO REQUEST METHOD GET A POST ID OF COMMENT AND MESSAGE OF COMMENT"""
@@ -116,14 +127,23 @@ def comment():
         input_tag = request.form["input_tag"]
 
         """THIS QUERY ADD COMMENT IN COMMENT TABLE"""
-        comment_obj = Comments(user_id=current_user.id, post_id=comment_post_id, message=input_tag)
+        comment_obj = Comments(user_id=current_user.id,
+                               post_id=comment_post_id, message=input_tag)
         db.session.add(comment_obj)
         db.session.commit()
 
         return 'comment successfully.'
+    else:
+        if current_user.is_authenticated:
+            flash('You not access this method', 'warning')
+            return redirect(url_for('main.home'))
+        else:
+            flash('You not access this method', 'warning')
+            return redirect(url_for('users.login'))
 
 
 @posts.route('/delete_comment/', methods=['GET', 'POST'])
+@login_required
 def delete_comment():
     if request.method == 'POST':
         """THIS REQUEST METHOD GET A 'delete_comment_id'"""
@@ -135,24 +155,33 @@ def delete_comment():
         db.session.commit()
 
         return 'comment deleted successfully.'
+    else:
+        if current_user.is_authenticated:
+            flash('You not access this method', 'warning')
+            return redirect(url_for('main.home'))
+        else:
+            flash('You not access this method', 'warning')
+            return redirect(url_for('users.login'))
 
 
 @posts.route('/trending_post/', methods=['GET', 'POST'])
 @login_required
 @count_friend_request
 def trending_post(friend_request=None):
-
     """THIS QUERY RETURN ALL TOTAL LIKES OF PARTICULAR POST FROM LIKES TABLE  """
-    likes = post_likes() # call post_likes function from helpers.py to fetch all-post-likes
+    likes = post_likes()  # call post_likes function from helpers.py to fetch all-post-likes
 
     page = request.args.get('page', 1, type=int)
-    list1 = Likes.query.with_entities(Likes.post_id, func.count((Likes.post_id))) \
+    list1 = Likes.query.with_entities(Likes.post_id, func.count(Likes.post_id)) \
         .group_by(Likes.post_id) \
-        .order_by(desc(func.count((Likes.post_id)))).all()
+        .order_by(desc(func.count(Likes.post_id))).all()
     list2 = []
     for i in list1:
         list2.append(i[0])
 
-    trending_posts = Post.query.filter(Post.id.in_(list2)).filter(Post.is_public == True).paginate(page=page, per_page=2)
+    trending_posts = Post.query.filter(Post.id.in_(list2)) \
+        .filter(Post.is_public == True) \
+        .paginate(page=page, per_page=2)
+
     return render_template('trending_post.html', title=trending_post, trending_posts=trending_posts,
                            friend_request=friend_request, likes=likes)

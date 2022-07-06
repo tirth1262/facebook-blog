@@ -21,5 +21,7 @@ class Config:
     LINKED_CLIENT_SECRET = os.environ.get('LINKED_CLIENT_SECRET')
     TWITTER_CLIENT_ID = os.environ.get('TWITTER_CLIENT_ID')
     TWITTER_CLIENT_SECRET = os.environ.get('TWITTER_CLIENT_SECRET')
+    FACEBOOK_CLIENT_ID = os.environ.get('FACEBOOK_CLIENT_ID')
+    FACEBOOK_CLIENT_SECRET = os.environ.get('FACEBOOK_CLIENT_SECRET')
     PASSWORD = os.environ.get('PASSWORD')
 

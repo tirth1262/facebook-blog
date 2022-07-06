@@ -88,6 +88,7 @@ def account():
         else:
             print("form not valid")
     elif request.method == 'GET':
+        print(current_user.user_profile,"current user")
         form.username.data = current_user.username
         form.firstname.data = current_user.user_profile.firstname
         form.lastname.data = current_user.user_profile.lastname

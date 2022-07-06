@@ -22,7 +22,7 @@ If you did not make this request then simply ignore this Because this is a spam 
 def reset_password(email):
     token = s.dumps(email)
     msg = Message('confirm email', sender='noreply@demo.com', recipients=[email])
-    link = url_for('users.confirm_reset_password_mail', token=token,_external=True)
+    link = url_for('users.confirm_reset_password_mail', token=token, _external=True)
     msg.body = f'''To reset your password, visit the following link:
 {link}
 If you did not make this request then simply ignore this email and no changes will be made.

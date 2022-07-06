@@ -126,7 +126,10 @@ def add_friend_action():
 
         return jsonify(response)
     else:
-        return None
+        if current_user.is_authenticated:
+            return redirect(url_for('main.home'))
+        else:
+            return redirect(url_for('users.login'))
 
 
 @friends.route('/block_list/', methods=['GET', 'POST'])
@@ -161,6 +164,12 @@ def block_list():
 def search():
     if request.method == 'POST':
         search_obj = request.form["search"]
+
+        """
+        THIS QUERY RETURN LIST OF USER'S ID 
+        WHICH FIRSTNAME AND LASTNAME HAVE 
+        SEARCH VALUE WHICH USER PASSED
+        """
         look_for = '%{0}%'.format(search_obj)
         user_obj = UserProfile.query \
             .with_entities(UserProfile.user_id) \
@@ -171,15 +180,24 @@ def search():
         for i in user_obj:
             user_list.append(i[0])
 
+        """
+        GET ALL USERS WHICH IN USER LIST
+        """
         search_users = User.query.filter(User.id.in_(user_list)).all()
+
         if not search_users:
             flash('No users', 'info')
 
-        list_of_friends = friend_list(is_blocked=False)
+        list_of_friends = friend_list(is_blocked=False) # list of friend from helpers.py
+
+        '''GET ALL PENDING REQUEST FRIENDS LIST'''
         pending_friend_requests = friend_list(is_blocked=False, status='pending')
 
     else:
-        return redirect(url_for('main.home'))
+        if current_user.is_authenticated:
+            return redirect(url_for('main.home'))
+        else:
+            return redirect(url_for('users.login'))
 
     return render_template('search.html', lis=list_of_friends, all_search_user=search_users,
                            pending_friend_requests=pending_friend_requests)

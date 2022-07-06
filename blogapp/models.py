@@ -45,6 +45,7 @@ class Post(db.Model):
     likes = db.relationship('Likes',cascade="all,delete", backref='likes', lazy='dynamic')
     comments = db.relationship('Comments',cascade="all,delete", backref='comments', lazy='dynamic')
     user_obj = db.relationship('User' , backref='user_obj')
+
     def __repr__(self):
         return f"Post('{self.title}')"
 

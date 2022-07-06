@@ -1,0 +1,16 @@
+{% macro registerField(fieldName) %}
+    <div class="form-group">
+        {{ fieldName.label(class="form-control-label") }}
+
+        {% if fieldName.errors %}
+            {{ fieldName(class="form-control form-control is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in fieldName.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ fieldName(class="form-control form-control") }}
+        {% endif %}
+    </div>
+{% endmacro %}
