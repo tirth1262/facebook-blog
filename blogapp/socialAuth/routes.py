@@ -174,7 +174,7 @@ facebook = oauth.register(
     authorize_url="https://graph.facebook.com/oauth/authorize",
     authorize_params=None,
     api_base_url='https://api.facebook.com/',
-    client_kwargs={'scope': 'email'},
+    client_kwargs={'scope': 'openid profile email'},
 )
 
 
@@ -223,4 +223,4 @@ def twitter_authorize():
     resp = oauth.twitter.get(url, params={'skip_status': True})
     user = resp.json()
     print(user)
-    return user['email']
+    return user
