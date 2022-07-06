@@ -48,9 +48,10 @@ def google_authorize():
 
         db.session.add(user_obj)
         db.session.commit()
-        # user = User.query.filter_by(email=resp['email']).first()
-        profile = UserProfile(firstname=None, lastname=None, profile_image=resp['picture'], birthday=None,
-                              user_id=user_obj.id)
+        user = User.query.filter_by(email=resp['email']).first()
+
+        profile = UserProfile(user_id=user.id)
+
         db.session.add(profile)
         db.session.commit()
         login_user(user)
@@ -98,8 +99,7 @@ def github_authorize():
         db.session.add(user_obj)
         db.session.commit()
         # user = User.query.filter_by(email=resp['email']).first()
-        profile = UserProfile(firstname=None, lastname=None, profile_image=resp['avatar_url'], birthday=None,
-                              user_id=user_obj.id)
+        profile = UserProfile(user_id=user_obj.id)
         db.session.add(profile)
         db.session.commit()
         login_user(user)
@@ -206,7 +206,7 @@ def facebook_authorized():
         db.session.commit()
         # user = User.query.filter_by(email=resp['email']).first()
         profile = UserProfile(firstname=resp['first_name'], lastname=resp['last_name'],
-                              profile_image=resp['picture']['data']['url'], birthday=resp['birthday'],
+                              birthday=resp['birthday'],
                               user_id=user_obj.id)
         db.session.add(profile)
         db.session.commit()
