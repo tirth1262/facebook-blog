@@ -24,4 +24,9 @@ class Config:
     FACEBOOK_CLIENT_ID = os.environ.get('FACEBOOK_CLIENT_ID')
     FACEBOOK_CLIENT_SECRET = os.environ.get('FACEBOOK_CLIENT_SECRET')
     PASSWORD = os.environ.get('PASSWORD')
+    CLOUDINARY_NAME = os.environ.get('CLOUDINARY_NAME')
+    CLOUDINARY_API_ID = os.environ.get('CLOUDINARY_API_ID')
+    CLOUDINARY_API_SECRET = os.environ.get('CLOUDINARY_API_SECRET')
+    # SQLALCHEMY_TRACK_MODIFICATIONS = False
+
 

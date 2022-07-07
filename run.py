@@ -6,4 +6,4 @@ app = create_app()
 migrate = Migrate(app, db)
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    app.run(debug=True)

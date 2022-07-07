@@ -1,5 +1,5 @@
 from blogapp import db
-from flask import render_template, redirect, flash, url_for, Blueprint, request, abort, jsonify
+from flask import render_template, redirect, flash, url_for, Blueprint, request, abort, jsonify, current_app
 from blogapp.posts.forms import PostForm
 from blogapp.models import Post, Likes, Comments
 from flask_login import current_user, login_required
@@ -7,8 +7,14 @@ from blogapp.posts.utils import save_picture
 from blogapp.decorators import count_friend_request
 from sqlalchemy import desc, func
 from blogapp.helpers import post_likes
+import cloudinary
+import cloudinary.uploader
 
 posts = Blueprint('posts', __name__)
+cloudinary.config(cloud_name=current_app.config["CLOUDINARY_NAME"], api_key=current_app.config["CLOUDINARY_API_ID"],
+                  api_secret=current_app.config["CLOUDINARY_API_SECRET"])
+
+
 
 
 @posts.route('/post/<int:post_id>')
@@ -70,12 +76,11 @@ def delete_post(post_id):
 def new_post(friend_request=None):
     form = PostForm()
     if form.validate_on_submit():
-        path = 'images'
-        size = 500
-        picture_file = save_picture(form.picture.data, size, path)
+        file_to_upload = form.picture.data
+        upload_result = cloudinary.uploader.upload(file_to_upload, folder='Post_images')
         post_obj = Post(title=form.title.data, content=form.content.data,
                         is_public=form.is_public.data,
-                        image_file=picture_file, author=current_user)
+                        image_file=upload_result['url'], author=current_user)
         db.session.add(post_obj)
         db.session.commit()
         flash(f'Your post has been created!', 'success')

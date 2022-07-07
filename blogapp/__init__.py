@@ -17,6 +17,7 @@ oauth = OAuth()
 socketio = SocketIO()
 
 
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -26,7 +27,7 @@ def create_app(config_class=Config):
     mail.init_app(app)
     login_manager.init_app(app)
     oauth.init_app(app)
-    socketio.init_app(app)
+    # socketio.init_app(app)
 
     with app.app_context():
         from blogapp.users.routes import users

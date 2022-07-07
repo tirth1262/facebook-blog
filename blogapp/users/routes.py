@@ -10,9 +10,14 @@ from blogapp.posts.utils import save_picture
 from sqlalchemy import desc
 from blogapp.helpers import post_likes, friend_list
 from blogapp.decorators import count_friend_request
+import cloudinary
+import cloudinary.uploader
 
 users = Blueprint('users', __name__)
 s = URLSafeTimedSerializer(current_app.config['SECRET_KEY'])
+cloudinary.config(cloud_name=current_app.config["CLOUDINARY_NAME"], api_key=current_app.config["CLOUDINARY_API_ID"],
+                  api_secret=current_app.config["CLOUDINARY_API_SECRET"])
+
 
 
 @users.route('/', methods=['GET', 'POST'])
@@ -74,10 +79,14 @@ def account():
     if request.method == 'POST':
         if form.validate_on_submit():
             if form.picture.data:
-                size = 125
-                path = 'profile_pics'
-                picture_file = save_picture(form.picture.data, size, path)
-                current_user.user_profile.profile_image = picture_file
+                # size = 125
+                # path = 'profile_pics'
+                # picture_file = save_picture(form.picture.data, size, path)
+                file_to_upload = form.picture.data
+                upload_result = cloudinary.uploader.upload(file_to_upload, folder='Profile_images')
+                current_user.user_profile.profile_image = upload_result['url']
+                print(upload_result['url'])
+
             current_user.username = form.username.data
             current_user.user_profile.firstname = form.firstname.data
             current_user.user_profile.lastname = form.lastname.data
