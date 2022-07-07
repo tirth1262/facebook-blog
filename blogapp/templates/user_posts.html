@@ -4,7 +4,7 @@
     <div class="container">
         <div class="row">
             <div class="card" style="width: 7.8125rem; height: 7.8125rem !important;">
-              <img class="card-img-top" src="{{ url_for('static', filename='profile_pics/'+user.user_profile.profile_image) }}" alt="Card image cap">
+              <img class="card-img-top" src="{{ user.user_profile.profile_image }}" alt="Card image cap">
             </div>
             <div class="user-detail" style="margin-left: 20px">
                 <h3>User Name : {{ user.username }}</h3>
@@ -31,8 +31,8 @@
                 <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a>
                 </h2>
                 <p class="article-content">{{ post.content }}</p>
-                <div class="">
-                    <img src="{{ post.image_file }}">
+                <div class="text-center">
+                        <img src="{{ post.image_file }}" style="width: 120px !important; height: auto!important;">
                 </div>
 
                 <div class="mt-3 ">

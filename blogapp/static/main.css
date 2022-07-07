@@ -15,7 +15,10 @@ h1, h2, h3, h4, h5, h6 {
 .site-header .navbar-nav .nav-link {
   color: #cbd5db;
 }
-
+.center-image {
+    width: 200px !important;
+    height: auto !important;
+}
 .site-header .navbar-nav .nav-link:hover {
   color: #ffffff;
 }

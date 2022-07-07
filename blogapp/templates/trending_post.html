@@ -14,8 +14,8 @@
                 <h2><a class="article-title" href="{{ url_for('posts.post', post_id=post.id) }}">{{ post.title }}</a>
                 </h2>
                 <p class="article-content">{{ post.content }}</p>
-                <div class="">
-                    <img src="{{ post.image_file }}">
+                <div class="text-center">
+                        <img src="{{ post.image_file }}" style="width: 120px !important; height: auto!important;">
                 </div>
 
                 <div class="mt-3 ">
