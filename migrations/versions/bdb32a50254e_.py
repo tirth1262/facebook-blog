@@ -34,7 +34,7 @@ def downgrade():
     op.alter_column('user_profile', 'profile_image',
                existing_type=sa.String(length=200),
                type_=sa.VARCHAR(length=50),
-               existing_nullable=True)
+               existing_nullable=False)
     op.alter_column('post', 'image_file',
                existing_type=sa.String(length=255),
                type_=sa.VARCHAR(length=100),
