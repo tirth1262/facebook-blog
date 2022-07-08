@@ -17,6 +17,7 @@
                                     <h5><a href="{{ url_for('users.user_posts', username=friend.username) }}" class="profile-link">{{ friend.username }}</a></h5>
                                     <p>{{ friend.email }}</p>
                                 </div>
+
                                 {% if friend.id in lis %}
                                         <a class="undo_request add-button" id="{{ friend.id }}"
                                            href="{{ url_for('friends.add_friend_action',friend_id=friend.id) }}">

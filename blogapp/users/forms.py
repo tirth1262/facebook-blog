@@ -4,6 +4,7 @@ from wtforms import StringField, PasswordField, BooleanField, SubmitField, Email
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, Regexp
 from blogapp.models import User
 from flask_wtf.file import FileField, FileAllowed
+from datetime import date
 
 
 class LoginForm(FlaskForm):
@@ -56,9 +57,9 @@ class UpdateAccountForm(FlaskForm):
     """
     username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
     email = EmailField('Email')
-    firstname = StringField('First name', validators=[DataRequired(), Length(min=2, max=20)])
-    lastname = StringField('Last name', validators=[DataRequired(), Length(min=2, max=20)])
-    birthday = DateField('Birth Date', validators=[DataRequired()])
+    firstname = StringField('First name')
+    lastname = StringField('Last name')
+    birthday = DateField('Birth Date')
     picture = FileField('Update Profile Picture', validators=[FileAllowed(['jpg', 'png'])])
     submit = SubmitField('Update')
 
@@ -71,6 +72,10 @@ class UpdateAccountForm(FlaskForm):
             if user:
                 raise ValidationError('That username is taken. Please try a another username')
 
+    def validate_birthday(self, birthday):
+        today = date.today()
+        if birthday.data > today:
+            raise ValidationError('Birthday is invalid, Please select valid Date')
 
 class UpdatePassword(FlaskForm):
     """

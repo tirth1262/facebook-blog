@@ -1,5 +1,6 @@
 from flask_login import current_user
 from blogapp.models import Friends, Likes
+from flask import flash
 
 
 def friend_list(is_blocked,status='accepted'):

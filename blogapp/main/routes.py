@@ -5,8 +5,7 @@ from blogapp.models import Post, User, UserProfile
 from sqlalchemy import desc
 from blogapp.decorators import count_friend_request
 from blogapp.helpers import friend_list, post_likes
-from blogapp import oauth, db
-from flask_login import login_user
+
 
 main = Blueprint('main', __name__)
 
@@ -17,6 +16,7 @@ main = Blueprint('main', __name__)
 @count_friend_request
 def home(friend_request=None):
     page = request.args.get('page', 1, type=int)
+
 
     """Called friend_list function from helpers.py to fetch all friend list"""
     friends_list = friend_list(is_blocked=False)

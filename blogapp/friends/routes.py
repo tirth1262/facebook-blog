@@ -65,6 +65,9 @@ def friend_requests():
     friend_request = Friends.query.filter(current_user.id == Friends.receiver_id).filter(
         Friends.status == 'pending').all()
 
+    if not friend_request:
+        flash('There is No Friends Request','info')
+
     return render_template('friend_request.html', friend_requests=friend_request)
 
 
@@ -100,6 +103,8 @@ def all_friends():
 
     """THIS QUERY FETCH ALL FRIENDS FROM FRIEND TABLE WHICH IN LIST2"""
     all_friends_list = User.query.filter(User.id.in_(friends_list)).filter(User.id != current_user.id).all()
+    if not all_friends_list:
+        flash('There is no Friends, Please add some friends first..!', 'info')
 
     return render_template('friend_list.html', friends=all_friends_list)
 

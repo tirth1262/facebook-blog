@@ -91,6 +91,8 @@ def account():
             current_user.user_profile.firstname = form.firstname.data
             current_user.user_profile.lastname = form.lastname.data
             current_user.user_profile.birthday = form.birthday.data
+            print("birthday data",form.birthday.data)
+            print(type(form.birthday.data))
             db.session.commit()
             flash(f'Your account has been updated!', 'success')
             return redirect(url_for('users.account'))

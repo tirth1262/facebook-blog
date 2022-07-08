@@ -3,7 +3,6 @@ from flask import render_template, redirect, flash, url_for, Blueprint, request,
 from blogapp.posts.forms import PostForm
 from blogapp.models import Post, Likes, Comments
 from flask_login import current_user, login_required
-from blogapp.posts.utils import save_picture
 from blogapp.decorators import count_friend_request
 from sqlalchemy import desc, func
 from blogapp.helpers import post_likes
@@ -13,8 +12,6 @@ import cloudinary.uploader
 posts = Blueprint('posts', __name__)
 cloudinary.config(cloud_name=current_app.config["CLOUDINARY_NAME"], api_key=current_app.config["CLOUDINARY_API_ID"],
                   api_secret=current_app.config["CLOUDINARY_API_SECRET"])
-
-
 
 
 @posts.route('/post/<int:post_id>')
@@ -186,7 +183,9 @@ def trending_post(friend_request=None):
 
     trending_posts = Post.query.filter(Post.id.in_(list2)) \
         .filter(Post.is_public == True) \
-        .paginate(page=page, per_page=2)
+        .limit(5).all()
 
+    if not trending_posts:
+        flash('No Trending Posts available Now.', 'info')
     return render_template('trending_post.html', title=trending_post, trending_posts=trending_posts,
                            friend_request=friend_request, likes=likes)
