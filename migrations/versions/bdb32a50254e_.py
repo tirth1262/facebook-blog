@@ -25,7 +25,7 @@ def upgrade():
     op.alter_column('user_profile', 'profile_image',
                existing_type=sa.VARCHAR(length=50),
                type_=sa.String(length=200),
-               existing_nullable=True)
+               existing_nullable=False)
     # ### end Alembic commands ###
 
 
