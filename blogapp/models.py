@@ -54,8 +54,7 @@ class UserProfile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     firstname = db.Column(db.String(50), nullable=True)
     lastname = db.Column(db.String(50), nullable=True)
-    profile_image = db.Column(db.String(200), nullable=True,default='http://res.cloudinary.com/dfmukiaes/image/upload/v1657192158'
-                                                      '/Profile_images/mpzcu7l2ss1auzbha9lj.jpg')
+    profile_image = db.Column(db.String(200), nullable=True, default='default.jpg')
     birthday = db.Column(db.Date, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
