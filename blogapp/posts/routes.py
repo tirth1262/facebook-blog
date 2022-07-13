@@ -133,8 +133,8 @@ def comment():
                                post_id=comment_post_id, message=input_tag)
         db.session.add(comment_obj)
         db.session.commit()
-
-        return 'comment successfully.'
+        flash('comment successfully.', 'success')
+        # return 'comment successfully.'
     else:
         if current_user.is_authenticated:
             flash('You not access this method', 'warning')
@@ -173,7 +173,6 @@ def trending_post(friend_request=None):
     """THIS QUERY RETURN ALL TOTAL LIKES OF PARTICULAR POST FROM LIKES TABLE  """
     likes = post_likes()  # call post_likes function from helpers.py to fetch all-post-likes
 
-    page = request.args.get('page', 1, type=int)
     list1 = Likes.query.with_entities(Likes.post_id, func.count(Likes.post_id)) \
         .group_by(Likes.post_id) \
         .order_by(desc(func.count(Likes.post_id))).all()
@@ -187,5 +186,5 @@ def trending_post(friend_request=None):
 
     if not trending_posts:
         flash('No Trending Posts available Now.', 'info')
-    return render_template('trending_post.html', title=trending_post, trending_posts=trending_posts,
+    return render_template('trending_post.html', title="trending_post", trending_posts=trending_posts,
                            friend_request=friend_request, likes=likes)

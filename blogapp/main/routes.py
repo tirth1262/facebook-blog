@@ -34,7 +34,7 @@ def home(friend_request=None):
     if not posts:
         flash('Create a new post and share your idea with us.', 'info')
     return render_template('home.html', posts=posts, friends=all_friends_list, friend_request=friend_request,
-                           likes=likes)
+                           likes=likes,title="Home")
 
 
 @main.route('/about/')

@@ -6,7 +6,6 @@ from blogapp.models import User, Post, UserProfile
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired
 from blogapp.users.mail import send_email, reset_password
 from flask_login import login_user, current_user, logout_user, login_required
-from blogapp.posts.utils import save_picture
 from sqlalchemy import desc
 from blogapp.helpers import post_likes, friend_list
 from blogapp.decorators import count_friend_request
@@ -26,7 +25,10 @@ def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.home'))
     form = LoginForm()
-    if form.validate_on_submit():
+    if request.method == 'GET':
+        return render_template('login.html', title='login', form=form)
+
+    elif request.method == 'POST' and form.validate():
         user = User.query.filter_by(email=form.email.data).first()
         if not (user and bcrypt.check_password_hash(user.password, form.password.data)):
             flash('Login Unsuccessful. Please check your email or password', 'danger')
@@ -35,6 +37,7 @@ def login():
         else:
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
+            flash('Login Successfully.', 'info')
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
 
     return render_template('login.html', title='login', form=form)
@@ -79,9 +82,6 @@ def account():
     if request.method == 'POST':
         if form.validate_on_submit():
             if form.picture.data:
-                # size = 125
-                # path = 'profile_pics'
-                # picture_file = save_picture(form.picture.data, size, path)
                 file_to_upload = form.picture.data
                 upload_result = cloudinary.uploader.upload(file_to_upload, folder='Profile_images')
                 current_user.user_profile.profile_image = upload_result['url']

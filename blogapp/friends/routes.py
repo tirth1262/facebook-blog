@@ -68,7 +68,7 @@ def friend_requests():
     if not friend_request:
         flash('There is No Friends Request','info')
 
-    return render_template('friend_request.html', friend_requests=friend_request)
+    return render_template('friend_request.html', title="friends-request", friend_requests=friend_request)
 
 
 @friends.route('/all_friends/', methods=['GET', 'POST'])
@@ -106,7 +106,7 @@ def all_friends():
     if not all_friends_list:
         flash('There is no Friends, Please add some friends first..!', 'info')
 
-    return render_template('friend_list.html', friends=all_friends_list)
+    return render_template('friend_list.html', title="friends", friends=all_friends_list)
 
 
 @friends.route('/add_friend_action/', methods=['GET', 'POST'])
@@ -161,7 +161,7 @@ def block_list():
     if not all_friends_list:
         flash('There is a no block user', 'info')
 
-    return render_template('block_list.html', block_friends=all_friends_list)
+    return render_template('block_list.html', title="block-list", block_friends=all_friends_list)
 
 
 @friends.route('/search/', methods=['GET', 'POST'])
