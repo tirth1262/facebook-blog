@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pytest
 from blogapp import create_app, db, bcrypt
 from blogapp.models import User, Post, Comments
@@ -43,8 +41,6 @@ def app():
         db.session.commit()
 
     yield app
-
-    # clean up / reset resources here
 
 
 @pytest.fixture()

@@ -41,7 +41,6 @@ class RegistrationForm(FlaskForm):
         if user:
             raise ValidationError('That username is taken. Please try a another username')
 
-
     def validate_email(self, email):
         """
         THIS FUNCTION IS VERIFY EMAIL OF USER IF IT'S ALREADY EXITS THEN THROW AN ERROR
@@ -76,6 +75,7 @@ class UpdateAccountForm(FlaskForm):
         today = date.today()
         if birthday.data > today:
             raise ValidationError('Birthday is invalid, Please select valid Date')
+
 
 class UpdatePassword(FlaskForm):
     """

@@ -17,6 +17,7 @@ Flask-Bcrypt==1.0.1
 Flask-Login==0.6.1
 Flask-Mail==0.9.1
 Flask-Migrate==3.1.0
+Flask-Share==0.1.1
 Flask-SocketIO==5.2.0
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==1.0.1

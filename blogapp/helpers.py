@@ -1,10 +1,8 @@
 from flask_login import current_user
 from blogapp.models import Friends, Likes
-from flask import flash
 
 
-def friend_list(is_blocked,status='accepted'):
-
+def friend_list(is_blocked, status='accepted'):
     list1 = []
     receiver_obj = Friends.query.with_entities(Friends.receiver_id).filter_by(sender_id=current_user.id,
                                                                               status=status,

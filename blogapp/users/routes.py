@@ -85,14 +85,11 @@ def account():
                 file_to_upload = form.picture.data
                 upload_result = cloudinary.uploader.upload(file_to_upload, folder='Profile_images')
                 current_user.user_profile.profile_image = upload_result['url']
-                print(upload_result['url'])
 
             current_user.username = form.username.data
             current_user.user_profile.firstname = form.firstname.data
             current_user.user_profile.lastname = form.lastname.data
             current_user.user_profile.birthday = form.birthday.data
-            print("birthday data",form.birthday.data)
-            print(type(form.birthday.data))
             db.session.commit()
             flash(f'Your account has been updated!', 'success')
             return redirect(url_for('users.account'))

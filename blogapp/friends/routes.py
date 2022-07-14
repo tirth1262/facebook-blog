@@ -66,7 +66,7 @@ def friend_requests():
         Friends.status == 'pending').all()
 
     if not friend_request:
-        flash('There is No Friends Request','info')
+        flash('There is No Friends Request', 'info')
 
     return render_template('friend_request.html', title="friends-request", friend_requests=friend_request)
 
@@ -193,7 +193,7 @@ def search():
         if not search_users:
             flash('No users', 'info')
 
-        list_of_friends = friend_list(is_blocked=False) # list of friend from helpers.py
+        list_of_friends = friend_list(is_blocked=False)  # list of friend from helpers.py
 
         '''GET ALL PENDING REQUEST FRIENDS LIST'''
         pending_friend_requests = friend_list(is_blocked=False, status='pending')

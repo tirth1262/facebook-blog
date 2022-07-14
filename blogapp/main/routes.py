@@ -1,22 +1,18 @@
-from flask import (render_template, Blueprint, flash,jsonify,
-                   request, current_app, url_for, redirect, session)
+from flask import render_template, Blueprint, flash, request
 from flask_login import current_user, login_required
-from blogapp.models import Post, User, UserProfile
+from blogapp.models import Post, User
 from sqlalchemy import desc
 from blogapp.decorators import count_friend_request
 from blogapp.helpers import friend_list, post_likes
 
-
 main = Blueprint('main', __name__)
 
 
-# @main.route("/", methods=['GET', 'POST'])
 @main.route('/home/', methods=['GET', 'POST'])
 @login_required
 @count_friend_request
 def home(friend_request=None):
     page = request.args.get('page', 1, type=int)
-
 
     """Called friend_list function from helpers.py to fetch all friend list"""
     friends_list = friend_list(is_blocked=False)
@@ -34,11 +30,9 @@ def home(friend_request=None):
     if not posts:
         flash('Create a new post and share your idea with us.', 'info')
     return render_template('home.html', posts=posts, friends=all_friends_list, friend_request=friend_request,
-                           likes=likes,title="Home")
+                           likes=likes, title="Home")
 
 
 @main.route('/about/')
 def about():
     return render_template('about.html', title='About')
-
-

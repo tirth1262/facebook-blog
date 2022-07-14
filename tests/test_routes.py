@@ -16,6 +16,7 @@ def test_login(login):
     assert login.request.path == "/home/"
 
 
+# Test case for wrong email check in login form
 def test_login_email(client):
     response = client.post(
         "/login",
@@ -25,6 +26,7 @@ def test_login_email(client):
     assert 'Login Unsuccessful. Please check your email or password' in str(response.data)
 
 
+# Test case for wrong password check in login form
 def test_login_password(client):
     response = client.post(
         "/login",
@@ -34,12 +36,14 @@ def test_login_password(client):
     assert 'Login Unsuccessful. Please check your email or password' in str(response.data)
 
 
+# Test case for successfully register user
 def test_register(register):
     assert 'Your account has been created! You are now able to log in' in str(register.data)
     assert register.status == '200 OK'
     assert register.request.path == "/login/"
 
 
+# Test case for email check in registration form
 def test_register_email(client):
     response = client.post(
         "/register",
@@ -49,6 +53,7 @@ def test_register_email(client):
     assert 'That email is taken. Please try a another email' in response.text
 
 
+# Test case for confirm_password check in registration form
 def test_register_password(client):
     response = client.post(
         "/register",
@@ -58,6 +63,7 @@ def test_register_password(client):
     assert 'Field must be equal to password.' in response.text
 
 
+# Test case for uppercase character in password in registration form
 def test_register_password1(client):
     response = client.post(
         "/register",
@@ -68,6 +74,7 @@ def test_register_password1(client):
     assert 'Password must have an uppercase character' in response.text
 
 
+# Test case for number in password in registration form
 def test_register_password2(client):
     response = client.post(
         "/register",
@@ -77,6 +84,7 @@ def test_register_password2(client):
     assert 'Password must contain a number' in response.text
 
 
+#  Test case for create new post
 def test_new_post(client, login):
     resources = Path(__file__).parent / "resources"
     print(resources)
@@ -90,11 +98,13 @@ def test_new_post(client, login):
     assert 'Your post has been created!' in str(response.data)
 
 
+# Test case for suggested_friends route
 def test_suggested_friends(client, login):
     response = client.get("/suggested_friends", follow_redirects=True)
     assert response.status == '200 OK'
 
 
+# Test case for suggested_friends route without login access
 def test_suggested_friends_failure(client):
     response = client.get("/suggested_friends", follow_redirects=True)
     assert 'Please log in to access this page.' in response.text
@@ -234,6 +244,7 @@ def test_delete_post_failure(client, login):
     assert response.status == '404 NOT FOUND'
 
 
+# Test case for new comment
 def test_comment_new(client, login):
     response = client.post(
         "/comment",
@@ -245,6 +256,7 @@ def test_comment_new(client, login):
     assert response.headers['Location'] == 'http://localhost/comment/'
 
 
+# Test case for delete comment
 def test_delete_comment(client, login):
     response = client.post(
         "/delete_comment",
@@ -263,3 +275,16 @@ def test_comment_failure(client):
     )
     assert response.status == '308 PERMANENT REDIRECT'
     assert response.headers['Location'] == 'http://localhost/comment/'
+
+
+def test_search(client):
+    response = client.post(
+        "/search",
+        data=dict(search="th"),
+        follow_redirects=False
+    )
+    assert response.status_code == 308
+
+
+
+

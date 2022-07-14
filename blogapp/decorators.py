@@ -9,4 +9,5 @@ def count_friend_request(fn, *args, **kwargs):
         friend_request = Friends.query.filter(current_user.id == Friends.receiver_id) \
             .filter(Friends.status == 'pending').count()
         return fn(friend_request=friend_request, *args, **kwargs)
+
     return decorated_view
