@@ -146,7 +146,7 @@ def test_update_password_failure2(client, login):
     assert "Field must be equal to new_password." in response.text
 
 
-# Test case for block list with login
+# Test case for block list with login get method
 def test_block_list(client, login):
     response = client.get(
         "/block_list",
@@ -156,13 +156,15 @@ def test_block_list(client, login):
     assert '<title>Flask Blog - block-list</title>' in str(response.data)
 
 
-# Test case for block list without login
+# Test case for block list without login get method
 def test_block_list_failure(client):
     response = client.get(
         "/block_list",
         follow_redirects=True
     )
     assert "Please log in to access this page." in response.text
+
+
 
 
 def test_all_friends(client, login):
@@ -287,4 +289,36 @@ def test_search(client):
 
 
 
-
+#
+# # Test case for add_friend_action route for post data check with login
+# def test_add_friend_action_post(client, login):
+#     response = client.post("/add_friend_action/",
+#                            data=dict(friend_id=2),
+#                           follow_redirects=False
+#                           )
+#     assert '{"add_request":true}' in response.text
+#
+#
+# # Test case for add_friend_action route for post data check without login
+# def test_add_friend_action_post_failure(client):
+#     response = client.post("/add_friend_action/",
+#                            data=dict(friend_id=2),
+#                           follow_redirects=False
+#                           )
+#     assert '<a href="/login/?next=%2Fadd_friend_action%2F">/login/?next=%2Fadd_friend_action%2F</a>.' in response.text
+#
+#
+# # Test case for add_friend_action route for get data check with login
+# def test_add_friend_action_get(client, login):
+#     response = client.get("/add_friend_action/",
+#                           follow_redirects=False
+#                           )
+#     assert '<a href="/home/">/home/</a>' in response.text
+#
+#
+# # Test case for add_friend_action route for post data check without login
+# def test_add_friend_action_get_fail(client):
+#     response = client.get("/add_friend_action/",
+#                           follow_redirects=False
+#                           )
+#     assert '<a href="/login/?next=%2Fadd_friend_action%2F">/login/?next=%2Fadd_friend_action%2F</a>' in response.text

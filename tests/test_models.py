@@ -35,3 +35,6 @@ def test_new_comment(new_comment):
     assert new_comment.post_id == 1
     assert new_comment.message == 'This is my first blog'
     assert new_comment.created_at == datetime.utcnow
+
+
+
