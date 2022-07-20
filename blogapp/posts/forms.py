@@ -8,6 +8,6 @@ class PostForm(FlaskForm):
 	"""THIS FORM USE TO CREATE A NEW POST """
 	title = StringField('Title', validators=[DataRequired()])
 	content = TextAreaField('Content', validators=[DataRequired()])
-	picture = FileField('Picture', validators=[DataRequired(),FileAllowed(['jpg', 'png'])])
+	picture = FileField('Picture', validators=[DataRequired(), FileAllowed(['jpg', 'png'])])
 	is_public = BooleanField('Is Public', default=True)
 	submit = SubmitField('Post')

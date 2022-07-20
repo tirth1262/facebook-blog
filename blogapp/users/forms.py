@@ -73,8 +73,9 @@ class UpdateAccountForm(FlaskForm):
 
     def validate_birthday(self, birthday):
         today = date.today()
-        if birthday.data > today:
-            raise ValidationError('Birthday is invalid, Please select valid Date')
+        if birthday.data:
+            if birthday.data >= today:
+                raise ValidationError('Birthday is invalid, Please select valid Date')
 
 
 class UpdatePassword(FlaskForm):
