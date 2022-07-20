@@ -206,7 +206,6 @@ def facebook_authorized():
         db.session.commit()
         # user = User.query.filter_by(email=resp['email']).first()
         profile = UserProfile(firstname=resp['first_name'], lastname=resp['last_name'],
-                              birthday=resp['birthday'],
                               user_id=user_obj.id)
         db.session.add(profile)
         db.session.commit()
