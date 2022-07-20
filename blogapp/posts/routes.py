@@ -47,6 +47,7 @@ def update_post(post_id, friend_request=None):
     elif request.method == 'GET':
         form.title.data = post_obj.title
         form.content.data = post_obj.content
+        form.picture.data = post_obj.image_file
 
     return render_template('create_post.html', title='Update Post',
                            form=form,
