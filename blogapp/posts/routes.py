@@ -41,6 +41,7 @@ def update_post(post_id, friend_request=None):
     if form.validate_on_submit():
         post_obj.title = form.title.data
         post_obj.content = form.content.data
+        post_obj.image_file = form.picture.data
         db.session.commit()
         flash(f'Your post has been updated!', 'success')
         return redirect(url_for('posts.post', post_id=post_id))
